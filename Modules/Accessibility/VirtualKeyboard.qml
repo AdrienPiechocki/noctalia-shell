@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
+import Quickshell.Wayland
 import qs.Commons
 import qs.Widgets
 import qs.Services.Keyboard
@@ -120,15 +121,21 @@ Loader {
                         left: true
                         right: true
                     }
-                    color: Color.transparent
+                    margins {
+                        left: background.width/3.33 - screen.x
+                        right: background.width/3.33 + screen.x
+                        top: background.height/2 + screen.y
+                        bottom: background.height/2 - screen.y
+                    }
+                    exclusionMode: ExclusionMode.Ignore
                     property alias backgroundBox: background
                     
                     NBox {
                         id: background
                         width: 1200
                         height: 500
-                        x: screen.width/2 - width/2 + screen.x
-                        y: screen.height/2 - height/2 + screen.y
+                        x: 0
+                        y: 0
                         color: Qt.rgba(Color.mSurfaceVariant.r, Color.mSurfaceVariant.g, Color.mSurfaceVariant.b, 0.75)
                         
                         NBox {
@@ -256,6 +263,11 @@ Loader {
                                             let globalY = background.y + screen.y
                                             bg.x = globalX - _screen.x
                                             bg.y = globalY - _screen.y
+                                            virtualKeyboard.margins.left += globalX
+                                            virtualKeyboard.margins.right -= globalX
+                                            virtualKeyboard.margins.top += globalY
+                                            virtualKeyboard.margins.bottom -= globalY
+                                                                           
                                             for (let child of bg.children) {
                                                 if (child.objectName == "dragButton") {
                                                     child.pressed = true
