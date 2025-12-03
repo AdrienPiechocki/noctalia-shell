@@ -124,8 +124,8 @@ Loader {
                     margins {
                         left: background.width * 28.5/100 - screen.x
                         right: background.width * 28.5/100 + screen.x
-                        top: background.height * 50/100 + screen.y
-                        bottom: background.height * 50/100 - screen.y
+                        top: background.height * 50/100 - screen.y
+                        bottom: background.height * 50/100 + screen.y
                     }
                     property alias backgroundBox: background
                     
