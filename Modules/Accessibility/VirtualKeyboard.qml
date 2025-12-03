@@ -122,20 +122,19 @@ Loader {
                         right: true
                     }
                     margins {
-                        left: background.width/3.33 - screen.x
-                        right: background.width/3.33 + screen.x
-                        top: background.height/2 + screen.y
-                        bottom: background.height/2 - screen.y
+                        left: background.width * 28.5/100 - screen.x
+                        right: background.width * 28.5/100 + screen.x
+                        top: background.height * 50/100 + screen.y
+                        bottom: background.height * 50/100 - screen.y
                     }
-                    exclusionMode: ExclusionMode.Ignore
                     property alias backgroundBox: background
                     
                     NBox {
                         id: background
                         width: 1200
                         height: 500
-                        x: 0
-                        y: 0
+                        x: 15
+                        y: 20
                         color: Qt.rgba(Color.mSurfaceVariant.r, Color.mSurfaceVariant.g, Color.mSurfaceVariant.b, 0.75)
                         
                         NBox {
@@ -261,13 +260,12 @@ Loader {
                                             let bg = dragButton.getBackground(_screen)
                                             let globalX = background.x + screen.x
                                             let globalY = background.y + screen.y
+                                            virtualKeyboard.margins.left += globalX - 15
+                                            virtualKeyboard.margins.right -= globalX - 15
+                                            virtualKeyboard.margins.top += globalY - 20
+                                            virtualKeyboard.margins.bottom -= globalY - 20
                                             bg.x = globalX - _screen.x
-                                            bg.y = globalY - _screen.y
-                                            virtualKeyboard.margins.left += globalX
-                                            virtualKeyboard.margins.right -= globalX
-                                            virtualKeyboard.margins.top += globalY
-                                            virtualKeyboard.margins.bottom -= globalY
-                                                                           
+                                            bg.y = globalY - _screen.y                                                                           
                                             for (let child of bg.children) {
                                                 if (child.objectName == "dragButton") {
                                                     child.pressed = true
