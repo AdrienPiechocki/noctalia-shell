@@ -98,6 +98,7 @@ Loader {
             required property ShellScreen modelData
             Loader {
                 id: mainLoader
+                objectName: "loader"
                 asynchronous: false
                 active: Settings.data.virtualKeyboard.enabled
                 property ShellScreen loaderScreen: modelData
@@ -118,6 +119,7 @@ Loader {
                         bottom: background.height * 50/100 - screen.y
                     }
 
+                    property alias backgroundBox: background
                     NBox {
                         id: background
                         width: 1200
@@ -150,8 +152,7 @@ Loader {
                             }
 
                             function getBackground(_screen) {
-                                for (let i = 0; i < allKeyboards.instances.length; i++) {
-                                    let instance = allKeyboards.instances[i];
+                                for (let instance of allKeyboards.instances) {
                                     for (let child of instance.children) {
                                         if (child.objectName == "loader") {
                                             let loader = child
@@ -176,70 +177,31 @@ Loader {
                                 drag.target: background
                                 drag.axis: Drag.XAndYAxis
 
-                                onPositionChanged: function(mouse) {
-                                    var globalX = background.x + screen.x
-                                    var globalY = background.y + screen.y
-
+                                onPositionChanged: {                                    
                                     for (var i=0; i<allKeyboards.model.length; i++ ){
                                         let _screen = allKeyboards.model[i]
-                                        if (_screen !== screen) {
+                                        if (_screen != screen) {
                                             let bg = dragButton.getBackground(_screen)
-                                            if (!bg) continue
-
+                                            let globalX = background.x + screen.x
+                                            let globalY = background.y + screen.y
                                             bg.x = globalX - _screen.x
                                             bg.y = globalY - _screen.y
-
-                                            // activer le dragButton visuel sur les autres écrans
+                                                  
+                                            for (let instance of allKeyboards.instances){
+                                                for (let child of instance.children) {
+                                                    let loader = instance.children
+                                                    if (loader[0] && loader[0].item) {
+                                                        console.log(loader[0].item.margins.left, loader[0].item.margins.right)
+                                                        loader[0].item.margins.left += globalX - 15
+                                                        loader[0].item.margins.right -= globalX - 15
+                                                        loader[0].item.margins.top += globalY - 20
+                                                        loader[0].item.margins.bottom -= globalY - 20
+                                                    }
+                                                }
+                                            }                                                                
                                             for (let child of bg.children) {
                                                 if (child.objectName == "dragButton") {
                                                     child.pressed = true
-                                                }
-                                            }
-                                        }
-                                    }
-
-
-                                    if (mouse.x > dragButton.startMouseX) {
-                                        for (let instance of allKeyboards.instances){
-                                            for (let child of instance.children) {
-                                                let loader = instance.children
-                                                if (loader[0] && loader[0].item) {
-                                                    loader[0].item.margins.left  += 1
-                                                    loader[0].item.margins.right -= 1
-                                                }
-                                            }
-                                        }
-                                    }
-                                    else if (mouse.x < dragButton.startMouseX) {
-                                        for (let instance of allKeyboards.instances){
-                                            for (let child of instance.children) {
-                                                let loader = instance.children
-                                                if (loader[0] && loader[0].item) {
-                                                    loader[0].item.margins.left  -= 1
-                                                    loader[0].item.margins.right += 1
-                                                }
-                                            }
-                                        }
-                                    }
-                                
-                                    if (mouse.y > dragButton.startMouseY) {
-                                        for (let instance of allKeyboards.instances){
-                                            for (let child of instance.children) {
-                                                let loader = instance.children
-                                                if (loader[0] && loader[0].item) {
-                                                    loader[0].item.margins.top  += 1
-                                                    loader[0].item.margins.bottom -= 1
-                                                }
-                                            }
-                                        }
-                                    }
-                                    else if (mouse.y < dragButton.startMouseY) {
-                                        for (let instance of allKeyboards.instances){
-                                            for (let child of instance.children) {
-                                                let loader = instance.children
-                                                if (loader[0] && loader[0].item) {
-                                                    loader[0].item.margins.top  -= 1
-                                                    loader[0].item.margins.bottom += 1
                                                 }
                                             }
                                         }
