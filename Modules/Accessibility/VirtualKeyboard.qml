@@ -149,11 +149,17 @@ Loader {
                                 color: dragButton.pressed ? Color.mSurfaceVariant : Color.mOnSurface
                             }
 
-                            function getBackground(screen) {
-                                for (let i = 0; i < allKeyboards.count; i++) {
-                                    let d = allKeyboards.itemAt(i);
-                                    if (d && d.loader.loaderScreen === screen)
-                                        return d.loader.item.backgroundBox;
+                            function getBackground(_screen) {
+                                for (let i = 0; i < allKeyboards.instances.length; i++) {
+                                    let instance = allKeyboards.instances[i];
+                                    for (let child of instance.children) {
+                                        if (child.objectName == "loader") {
+                                            let loader = child
+                                            if (loader.loaderScreen === _screen){
+                                                return loader.item.backgroundBox
+                                            }
+                                        }
+                                    }
                                 }
                                 return null;
                             }
@@ -198,8 +204,8 @@ Loader {
                                             for (let child of instance.children) {
                                                 let loader = instance.children
                                                 if (loader[0] && loader[0].item) {
-                                                    loader[0].item.margins.left  += globalX
-                                                    loader[0].item.margins.right -= globalX
+                                                    loader[0].item.margins.left  += 1
+                                                    loader[0].item.margins.right -= 1
                                                 }
                                             }
                                         }
@@ -209,8 +215,8 @@ Loader {
                                             for (let child of instance.children) {
                                                 let loader = instance.children
                                                 if (loader[0] && loader[0].item) {
-                                                    loader[0].item.margins.left  -= globalX
-                                                    loader[0].item.margins.right += globalX
+                                                    loader[0].item.margins.left  -= 1
+                                                    loader[0].item.margins.right += 1
                                                 }
                                             }
                                         }
@@ -221,8 +227,8 @@ Loader {
                                             for (let child of instance.children) {
                                                 let loader = instance.children
                                                 if (loader[0] && loader[0].item) {
-                                                    loader[0].item.margins.top  += globalY
-                                                    loader[0].item.margins.bottom -= globalY
+                                                    loader[0].item.margins.top  += 1
+                                                    loader[0].item.margins.bottom -= 1
                                                 }
                                             }
                                         }
@@ -232,8 +238,8 @@ Loader {
                                             for (let child of instance.children) {
                                                 let loader = instance.children
                                                 if (loader[0] && loader[0].item) {
-                                                    loader[0].item.margins.top  -= globalY
-                                                    loader[0].item.margins.bottom += globalY
+                                                    loader[0].item.margins.top  -= 1
+                                                    loader[0].item.margins.bottom += 1
                                                 }
                                             }
                                         }
