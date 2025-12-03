@@ -113,10 +113,10 @@ Loader {
                         right: true
                     }
                     margins {
-                        left: background.width * 28.5/100 + screen.x
-                        right: background.width * 28.5/100 - screen.x
-                        top: background.height * 50/100 + screen.y
-                        bottom: background.height * 50/100 - screen.y
+                        left: background.width * 28.5/100 - screen.x
+                        right: background.width * 28.5/100 + screen.x
+                        top: background.height * 50/100 - screen.y
+                        bottom: background.height * 50/100 + screen.y
                     }
 
                     property alias backgroundBox: background
@@ -124,8 +124,8 @@ Loader {
                         id: background
                         width: 1200
                         height: 500
-                        x: 15
-                        y: 20
+                        x: 15 - screen.x
+                        y: 20 - screen.y
                         color: Qt.rgba(Color.mSurfaceVariant.r, Color.mSurfaceVariant.g, Color.mSurfaceVariant.b, 0.75)
                         
                         NBox {
@@ -138,8 +138,6 @@ Loader {
                             anchors.rightMargin: 15
 
                             property bool pressed: false
-                            property real startMouseX: 0
-                            property real startMouseY: 0
 
                             color: pressed ? Color.mOnSurface : Color.mSurfaceVariant
                             radius: 100
@@ -170,35 +168,35 @@ Loader {
                                 anchors.fill: parent
                                 onPressed: function(mouse) {
                                     dragButton.pressed = true
-                                    dragButton.startMouseX = mouse.x
-                                    dragButton.startMouseY = mouse.y
                                 }
                                 
                                 drag.target: background
                                 drag.axis: Drag.XAndYAxis
 
-                                onPositionChanged: {                                    
+                                onPositionChanged: function(mouse) {           
+                                    let globalX = background.x + screen.x
+                                    let globalY = background.y + screen.y
+                                    console.log(background.x, background.y)
                                     for (var i=0; i<allKeyboards.model.length; i++ ){
                                         let _screen = allKeyboards.model[i]
                                         if (_screen != screen) {
                                             let bg = dragButton.getBackground(_screen)
-                                            let globalX = background.x + screen.x
-                                            let globalY = background.y + screen.y
                                             bg.x = globalX - _screen.x
                                             bg.y = globalY - _screen.y
-                                                  
-                                            for (let instance of allKeyboards.instances){
+                                            console.log(bg.x, bg.y)
+                                            
+                                            for (let instance of allKeyboards.instances) {
                                                 for (let child of instance.children) {
-                                                    let loader = instance.children
-                                                    if (loader[0] && loader[0].item) {
-                                                        console.log(loader[0].item.margins.left, loader[0].item.margins.right)
-                                                        loader[0].item.margins.left += globalX - 15
-                                                        loader[0].item.margins.right -= globalX - 15
-                                                        loader[0].item.margins.top += globalY - 20
-                                                        loader[0].item.margins.bottom -= globalY - 20
+                                                    if (child.objectName === "loader" && child.item && child.item.margins) {
+                                                        let m = child.item.margins
+                                                        m.left += globalX - 15
+                                                        m.right -= globalX - 15
+                                                        m.top += globalY - 20
+                                                        m.bottom -= globalY - 20
                                                     }
                                                 }
-                                            }                                                                
+                                            }
+                                                    
                                             for (let child of bg.children) {
                                                 if (child.objectName == "dragButton") {
                                                     child.pressed = true
