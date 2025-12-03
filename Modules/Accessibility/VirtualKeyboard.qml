@@ -127,6 +127,7 @@ Loader {
                         top: background.height * 50/100 - screen.y
                         bottom: background.height * 50/100 + screen.y
                     }
+                    color: "black"
                     property alias backgroundBox: background
                     
                     NBox {
@@ -217,7 +218,11 @@ Loader {
                             anchors.leftMargin: 10
                             
                             property bool pressed: false
-
+                            property real localX: 0
+                            property real localY: 0
+                            property real startX: 0
+                            property real startY: 0
+                            
                             color: pressed ? Color.mOnSurface : Color.mSurfaceVariant
                             radius: 20
 
@@ -248,24 +253,36 @@ Loader {
                                 anchors.fill: parent
                                 onPressed: {
                                     dragButton.pressed = true
+                                    dragButton.startX = mouse.x
+                                    dragButton.startY = mouse.y
                                 }
 
                                 drag.target: background
                                 drag.axis: Drag.XAndYAxis
 
-                                onPositionChanged: {                                    
+                                onPositionChanged: {
+                                    dragButton.localX += mouse.x - dragButton.startX
+                                    dragButton.localY += mouse.y - dragButton.startY
+                                    console.log(dragButton.localX, dragButton.localY)
                                     for (var i=0; i<allKeyboards.model.length; i++ ){
                                         let _screen = allKeyboards.model[i]
                                         if (_screen != screen) {
                                             let bg = dragButton.getBackground(_screen)
                                             let globalX = background.x + screen.x
                                             let globalY = background.y + screen.y
-                                            virtualKeyboard.margins.left += globalX - 15
-                                            virtualKeyboard.margins.right -= globalX - 15
-                                            virtualKeyboard.margins.top += globalY - 20
-                                            virtualKeyboard.margins.bottom -= globalY - 20
-                                            bg.x = globalX - _screen.x
-                                            bg.y = globalY - _screen.y                                                                           
+                                            for (let instance of allKeyboards.instances) {
+                                                for (let child of instance.children) {
+                                                    if (child.objectName === "loader" && child.item && child.item.margins) {
+                                                        let m = child.item.margins
+                                                        m.left += background.x - 15
+                                                        m.right -= background.x - 15
+                                                        m.top += background.y - 20
+                                                        m.bottom -= background.y - 20
+                                                    }
+                                                }
+                                            }
+                                            bg.x = background.x
+                                            bg.y = background.y
                                             for (let child of bg.children) {
                                                 if (child.objectName == "dragButton") {
                                                     child.pressed = true
@@ -274,7 +291,7 @@ Loader {
                                         }
                                     }
                                 }
-
+                                
                                 onReleased: {
                                     for (var i=0; i<allKeyboards.model.length; i++ ){
                                         let _screen = allKeyboards.model[i]
