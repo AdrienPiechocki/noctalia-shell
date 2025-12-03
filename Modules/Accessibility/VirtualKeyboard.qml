@@ -122,22 +122,47 @@ Loader {
                         right: true
                     }
                     margins {
-                        left: background.width * 28.5/100 - screen.x
-                        right: background.width * 28.5/100 + screen.x
-                        top: background.height * 50/100 - screen.y
-                        bottom: background.height * 50/100 + screen.y
+                        left: background.width * 30/100 - screen.x
+                        right: background.width * 30/100 + screen.x
+                        top: background.height * 54/100 - screen.y
+                        bottom: background.height * 54/100 + screen.y
                     }
-                    color: "black"
+                    color: Color.transparent
                     property alias backgroundBox: background
                     
                     NBox {
                         id: background
                         width: 1200
                         height: 500
-                        x: 15
-                        y: 20
+                        x: 0
+                        y: 0
                         color: Qt.rgba(Color.mSurfaceVariant.r, Color.mSurfaceVariant.g, Color.mSurfaceVariant.b, 0.75)
-                        
+
+                        // adapt margins
+                        onXChanged: {
+                            for (let instance of allKeyboards.instances) {
+                                for (let child of instance.children) {
+                                    if (child.objectName === "loader" && child.item && child.item.margins) {
+                                        let m = child.item.margins
+                                        m.left += x
+                                        m.right -= x
+                                    }
+                                }
+                            }
+                            x = 0
+                        }
+                        onYChanged: {
+                            for (let instance of allKeyboards.instances) {
+                                for (let child of instance.children) {
+                                    if (child.objectName === "loader" && child.item && child.item.margins) {
+                                        let m = child.item.margins
+                                        m.top += y
+                                        m.bottom -= y
+                                    }
+                                }
+                            }
+                            y = 0
+                        }
                         NBox {
                             id: closeButton
                             width: 50
@@ -253,34 +278,19 @@ Loader {
                                 anchors.fill: parent
                                 onPressed: {
                                     dragButton.pressed = true
-                                    dragButton.startX = mouse.x
-                                    dragButton.startY = mouse.y
                                 }
 
                                 drag.target: background
                                 drag.axis: Drag.XAndYAxis
 
                                 onPositionChanged: {
-                                    dragButton.localX += mouse.x - dragButton.startX
-                                    dragButton.localY += mouse.y - dragButton.startY
-                                    console.log(dragButton.localX, dragButton.localY)
+                                    // sync every instance
                                     for (var i=0; i<allKeyboards.model.length; i++ ){
                                         let _screen = allKeyboards.model[i]
                                         if (_screen != screen) {
                                             let bg = dragButton.getBackground(_screen)
                                             let globalX = background.x + screen.x
                                             let globalY = background.y + screen.y
-                                            for (let instance of allKeyboards.instances) {
-                                                for (let child of instance.children) {
-                                                    if (child.objectName === "loader" && child.item && child.item.margins) {
-                                                        let m = child.item.margins
-                                                        m.left += background.x - 15
-                                                        m.right -= background.x - 15
-                                                        m.top += background.y - 20
-                                                        m.bottom -= background.y - 20
-                                                    }
-                                                }
-                                            }
                                             bg.x = background.x
                                             bg.y = background.y
                                             for (let child of bg.children) {
