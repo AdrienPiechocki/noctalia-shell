@@ -332,22 +332,19 @@ Loader {
                                         model: modelData
 
                                         NBox {
+                                            id: key
                                             width: modelData.width
                                             height: 60
                                             color: (runScript.running || (modelData.key ===  "caps" & root.capsON) || (modelData.key in root.activeModifiers & root.activeModifiers[modelData.key])) ? Color.mOnSurface : Color.mSurfaceVariant
-
-                                            // refresh colors and text every 0.2 seconds
-                                            Timer {
-                                                interval: 200; running: true; repeat: true
-                                                onTriggered: {
-                                                    if (modelData.key in root.activeModifiers || modelData.key ===  "caps") {
-                                                        color = (runScript.running || (modelData.key ===  "caps" & root.capsON) || (modelData.key in root.activeModifiers & root.activeModifiers[modelData.key])) ? Color.mOnSurface : Color.mSurfaceVariant
-                                                    }
-                                                    keyText.color = (runScript.running || (modelData.key ===  "caps" & root.capsON) || (modelData.key in root.activeModifiers & root.activeModifiers[modelData.key])) ? Color.mSurfaceVariant : Color.mOnSurface
-                                                    keyText.text = (root.activeModifiers["shift"] || root.capsON === true) ? modelData.shift : modelData.txt
+                                            property bool pressed: false
+                                            onPressedChanged: {
+                                                if (modelData.key in root.activeModifiers || modelData.key ===  "caps") {
+                                                    color = (runScript.running || (modelData.key ===  "caps" & root.capsON) || (modelData.key in root.activeModifiers & root.activeModifiers[modelData.key])) ? Color.mOnSurface : Color.mSurfaceVariant
                                                 }
+                                                keyText.color = (runScript.running || (modelData.key ===  "caps" & root.capsON) || (modelData.key in root.activeModifiers & root.activeModifiers[modelData.key])) ? Color.mSurfaceVariant : Color.mOnSurface
+                                                keyText.text = (root.activeModifiers["shift"] || root.capsON === true) ? modelData.shift : modelData.txt
                                             }
-
+                                            
                                             NText {
                                                 id: keyText
                                                 anchors.centerIn: parent
@@ -386,6 +383,7 @@ Loader {
                                             MouseArea {
                                                 anchors.fill: parent
                                                 onPressed: {
+                                                    key.pressed = true
                                                     if (modelData.key in root.activeModifiers) {
                                                         toggleModifier(modelData.key)
                                                     }
@@ -407,6 +405,7 @@ Loader {
                                                     Logger.d(modelData.key.toString())
                                                 }
                                                 onReleased: {
+                                                    key.pressed = false
                                                     if (!(modelData.key in root.activeModifiers)) {
                                                         root.keyArray = []
                                                         root.activeModifiers = {"shift": false, "alt": false, "super": false, "ctrl": false}
