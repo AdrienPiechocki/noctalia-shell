@@ -402,7 +402,7 @@ Loader {
                                                                 root.keyArray.push(k);
                                                             }
                                                         }
-                                                        root.keyArray.unshift(root.layout === root.azerty ? "fr" : "en")
+                                                        root.keyArray.unshift(root.layout === root.azerty ? "azerty" : "qwerty")
                                                         runScript.startWithKeys(keyArray)
                                                     }
                                                     Logger.d(modelData.key.toString())

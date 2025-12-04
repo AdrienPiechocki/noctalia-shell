@@ -61,7 +61,7 @@ def check_ydotool_service():
 def press_key(code, down=True):
     run(["ydotool", "key", f"{code}:{1 if down else 0}"])
 
-def toggle_special_key(name):
+def toggle_modifier_key(name):
     code = MODIFIER_KEYS.get(name)
     if code is None:
         sys.exit(f"[ERROR] Not toggleable: {name}")
@@ -76,7 +76,7 @@ def toggle_special_key(name):
     print(f"[INFO] {name} {'DOWN' if state[name] else 'UP'}")
 
 def apply_layout(key, layout):
-    return AZERTY_TO_QWERTY.get(key.lower(), key) if layout == "fr" else key
+    return AZERTY_TO_QWERTY.get(key.lower(), key) if layout == "azerty" else key
 
 # ---------- SEND KEY ----------
 def send_key(layout, key, modifiers):
@@ -88,7 +88,7 @@ def send_key(layout, key, modifiers):
         if active:
             send_key(key, active)
             for m in active:
-                toggle_special_key(m)
+                toggle_modifier_key(m)
             return
 
     # Press modifiers
@@ -119,7 +119,7 @@ def reset():
     # Release all toggled modifiers
     for key, pressed in state.items():
         if pressed:
-            toggle_special_key(key)
+            toggle_modifier_key(key)
             press_key(MODIFIER_KEYS[key], False)
 
     # Reset CapsLock LED if needed
@@ -135,7 +135,7 @@ def reset():
 # ---------- MAIN ----------
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python type-key.py <key_or_text> [modifiers...]")
+        print("Usage: python type-key.py <layout> <key_or_text> [modifiers...]")
         sys.exit(1)
 
     layout = sys.argv[1]
