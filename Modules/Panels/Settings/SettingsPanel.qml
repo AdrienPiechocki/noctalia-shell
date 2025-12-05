@@ -6,6 +6,7 @@ import qs.Commons
 import qs.Modules.MainScreen
 import qs.Modules.Panels.Settings.Tabs
 import qs.Modules.Panels.Settings.Tabs.ColorScheme
+import qs.Modules.Panels.Settings.Tabs.SessionMenu
 import qs.Services.System
 import qs.Widgets
 
@@ -76,6 +77,7 @@ SmartPanel {
     Location,
     Network,
     Notifications,
+    Plugins,
     ScreenRecorder,
     SessionMenu,
     SystemMonitor,
@@ -172,6 +174,10 @@ SmartPanel {
   Component {
     id: systemMonitorTab
     SystemMonitorTab {}
+  }
+  Component {
+    id: pluginsTab
+    PluginsTab {}
   }
 
   Component {
@@ -291,10 +297,10 @@ SmartPanel {
             "source": systemMonitorTab
           },
           {
-            "id": SettingsPanel.Tab.Accessibility,
-            "label": "settings.accessibility.title",
-            "icon": "settings-heart",
-            "source": accessibilityTab
+            "id": SettingsPanel.Tab.Plugins,
+            "label": "settings.plugins.title",
+            "icon": "plugin",
+            "source": pluginsTab
           },
           {
             "id": SettingsPanel.Tab.Hooks,
