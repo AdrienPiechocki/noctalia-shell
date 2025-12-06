@@ -581,6 +581,12 @@ Singleton {
       property string wallpaperChange: ""
       property string darkModeChange: ""
     }
+
+    // floating panels
+    property JsonObject floatingPanel: JsonObject {
+      property bool enabled: false
+      property bool clicking: false
+    }
   }
 
   // -----------------------------------------------------
