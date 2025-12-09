@@ -40,6 +40,35 @@ Rectangle {
   readonly property string hideMode: (widgetSettings.hideMode !== undefined) ? widgetSettings.hideMode : widgetMetadata.hideMode
   readonly property bool onlySameOutput: (widgetSettings.onlySameOutput !== undefined) ? widgetSettings.onlySameOutput : widgetMetadata.onlySameOutput
   readonly property bool onlyActiveWorkspaces: (widgetSettings.onlyActiveWorkspaces !== undefined) ? widgetSettings.onlyActiveWorkspaces : widgetMetadata.onlyActiveWorkspaces
+  readonly property bool showTitle: isVerticalBar ? false : (widgetSettings.showTitle !== undefined) ? widgetSettings.showTitle : widgetMetadata.showTitle
+  readonly property bool smartWidth: (widgetSettings.smartWidth !== undefined) ? widgetSettings.smartWidth : widgetMetadata.smartWidth
+  readonly property int maxTaskbarWidthPercent: (widgetSettings.maxTaskbarWidth !== undefined) ? widgetSettings.maxTaskbarWidth : widgetMetadata.maxTaskbarWidth
+
+  // Maximum width for the taskbar widget to prevent overlapping with other widgets
+  readonly property real maxTaskbarWidth: {
+    if (!screen || isVerticalBar || !smartWidth || maxTaskbarWidthPercent <= 0)
+      return 0;
+    var barFloating = Settings.data.bar.floating || false;
+    var barMarginH = barFloating ? Math.ceil(Settings.data.bar.marginHorizontal * Style.marginXL) : 0;
+    var availableWidth = screen.width - (barMarginH * 2);
+    return Math.round(availableWidth * (maxTaskbarWidthPercent / 100));
+  }
+
+  readonly property int titleWidth: {
+    if (smartWidth && showTitle && !isVerticalBar && combinedModel.length > 0) {
+      var entriesCount = combinedModel.length;
+      var baseWidth = 140;
+      var calculatedWidth = baseWidth / Math.sqrt(entriesCount);
+
+      if (maxTaskbarWidth > 0) {
+        var maxWidthPerEntry = (maxTaskbarWidth / entriesCount) - itemSize - Style.marginS - Style.marginM * 2;
+        calculatedWidth = Math.min(calculatedWidth, maxWidthPerEntry);
+      }
+
+      return Math.max(Math.round(calculatedWidth), 20);
+    }
+    return (widgetSettings.titleWidth !== undefined) ? widgetSettings.titleWidth : widgetMetadata.titleWidth;
+  }
   readonly property bool showPinnedApps: (widgetSettings.showPinnedApps !== undefined) ? widgetSettings.showPinnedApps : widgetMetadata.showPinnedApps
 
   // Context menu state
@@ -47,6 +76,8 @@ Rectangle {
   property string selectedAppName: ""
   property int modelUpdateTrigger: 0  // Dummy property to force model re-evaluation
 
+  // Hover state
+  property var hoveredWindowId: ""
   // Combined model of running windows and pinned apps
   property var combinedModel: []
 
@@ -114,6 +145,7 @@ Rectangle {
         if (passOutput && passWorkspace) {
           const isPinned = isAppIdPinned(w.appId, pinnedApps);
           runningWindows.push({
+                                "id": w.id,
                                 "type": isPinned ? "pinned-running" : "running",
                                 "window": w,
                                 "appId": w.appId,
@@ -133,6 +165,7 @@ Rectangle {
                            if (!processedAppIds.has(normalizedPinnedId)) {
                              const appName = getAppNameFromDesktopEntry(pinnedAppId);
                              runningWindows.push({
+                                                   "id": pinnedAppId,
                                                    "type": "pinned",
                                                    "window": null,
                                                    "appId": pinnedAppId,
@@ -271,7 +304,21 @@ Rectangle {
     }
   }
 
-  implicitWidth: visible ? (isVerticalBar ? Style.capsuleHeight : Math.round(taskbarLayout.implicitWidth + Style.marginM * 2)) : 0
+  implicitWidth: {
+    if (!visible)
+      return 0;
+    if (isVerticalBar)
+      return Style.capsuleHeight;
+
+    var calculatedWidth = showTitle ? Math.round(taskbarLayout.implicitWidth) : Math.round(taskbarLayout.implicitWidth + Style.marginM * 2);
+
+    // Apply maximum width constraint when smartWidth is enabled
+    if (smartWidth && maxTaskbarWidth > 0) {
+      return Math.min(calculatedWidth, maxTaskbarWidth);
+    }
+
+    return calculatedWidth;
+  }
   implicitHeight: visible ? (isVerticalBar ? Math.round(taskbarLayout.implicitHeight + Style.marginM * 2) : Style.capsuleHeight) : 0
   radius: Style.radiusM
   color: Style.capsuleColor
@@ -280,8 +327,8 @@ Rectangle {
     id: taskbarLayout
     anchors.fill: parent
     anchors {
-      leftMargin: isVerticalBar ? undefined : Style.marginM
-      rightMargin: isVerticalBar ? undefined : Style.marginM
+      leftMargin: (root.showTitle || isVerticalBar) ? undefined : Style.marginM
+      rightMargin: (root.showTitle || isVerticalBar) ? undefined : Style.marginM
       topMargin: (density === "compact") ? 0 : isVerticalBar ? Style.marginM : undefined
       bottomMargin: (density === "compact") ? 0 : isVerticalBar ? Style.marginM : undefined
     }
@@ -304,49 +351,102 @@ Rectangle {
         readonly property bool isPinned: modelData.type === "pinned" || modelData.type === "pinned-running"
         readonly property bool isFocused: isRunning && modelData.window && modelData.window.isFocused
         readonly property bool isPinnedRunning: isPinned && isRunning && !isFocused
+        readonly property bool isHovered: root.hoveredWindowId === modelData.id
 
-        Layout.preferredWidth: root.itemSize
+        readonly property bool shouldShowTitle: root.showTitle && modelData.type !== "pinned"
+        readonly property real itemSpacing: Style.marginS
+        readonly property real contentWidth: shouldShowTitle ? root.itemSize + itemSpacing + root.titleWidth : root.itemSize
+
+        readonly property string title: modelData.title || modelData.appId || "Unknown application"
+        readonly property color titleBgColor: (isHovered || isFocused) ? Color.mHover : Style.capsuleColor
+        readonly property color titleFgColor: (isHovered || isFocused) ? Color.mOnHover : Color.mOnSurface
+
+        Layout.preferredWidth: root.showTitle ? contentWidth + Style.marginM * 2 : contentWidth // Add margins for both pinned and running apps
         Layout.preferredHeight: root.itemSize
         Layout.alignment: Qt.AlignCenter
 
-        IconImage {
-          id: appIcon
+        Rectangle {
+          id: titleBackground
+          visible: shouldShowTitle
+          anchors.centerIn: parent
           width: parent.width
-          height: parent.height
-          source: ThemeIcons.iconForAppId(modelData.appId)
-          smooth: true
-          asynchronous: true
-          // Opacity: Focused (1.0) > Pinned Running (0.7) > Regular Running (0.6) > Just Pinned (0.4)
-          opacity: isFocused ? Style.opacityFull : (isPinnedRunning ? 0.7 : (isRunning ? 0.6 : 0.4))
+          height: root.height
+          color: titleBgColor
+          radius: Style.radiusM
 
-          // For pinned apps that aren't running: use a muted color to indicate not running
-          // For other apps: use standard colorization if enabled
-          layer.enabled: (isPinned && !isRunning) || (root.widgetSettings.colorizeIcons !== false && !isFocused)
-          layer.effect: ShaderEffect {
-            property color targetColor: {
-              // Pinned but not running: use a muted/desaturated color to indicate not running
-              if (isPinned && !isRunning) {
-                // Use a muted secondary or outline color
-                return Settings.data.colorSchemes.darkMode ? Qt.darker(Color.mSecondary, 1.3) : Qt.lighter(Color.mSecondary, 1.5);
-              }
-              // Standard colorization for other cases
-              return Settings.data.colorSchemes.darkMode ? Color.mOnSurface : Color.mSurfaceVariant;
+          Behavior on color {
+            ColorAnimation {
+              duration: Style.animationFast
+              easing.type: Easing.InOutQuad
             }
-            property real colorizeMode: 0.0 // Dock mode (grayscale)
-
-            fragmentShader: Qt.resolvedUrl(Quickshell.shellDir + "/Shaders/qsb/appicon_colorize.frag.qsb")
           }
+        }
 
-          // Active indicator (focused window)
-          Rectangle {
-            id: iconBackground
-            anchors.bottomMargin: -2
-            anchors.bottom: parent.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
-            width: 4
-            height: 4
-            color: isFocused ? Color.mPrimary : Color.transparent
-            radius: Math.min(Style.radiusXXS, width / 2)
+        Rectangle {
+          anchors.centerIn: parent
+          width: taskbarItem.contentWidth
+          height: parent.height
+          color: "transparent"
+
+          RowLayout {
+            id: itemLayout
+            anchors.fill: parent
+            spacing: taskbarItem.itemSpacing
+
+            Item {
+              Layout.preferredWidth: root.itemSize
+              Layout.preferredHeight: root.itemSize
+              Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
+
+              IconImage {
+                id: appIcon
+                anchors.fill: parent
+
+                source: ThemeIcons.iconForAppId(taskbarItem.modelData.appId)
+                smooth: true
+                asynchronous: true
+                opacity: (shouldShowTitle || taskbarItem.isFocused) ? Style.opacityFull : 0.6
+
+                // Apply dock shader to all taskbar icons
+                layer.enabled: widgetSettings.colorizeIcons !== false
+                layer.effect: ShaderEffect {
+                  property color targetColor: Settings.data.colorSchemes.darkMode ? Color.mOnSurface : Color.mSurfaceVariant
+                  property real colorizeMode: 0.0 // Dock mode (grayscale)
+
+                  fragmentShader: Qt.resolvedUrl(Quickshell.shellDir + "/Shaders/qsb/appicon_colorize.frag.qsb")
+                }
+              }
+
+              Rectangle {
+                id: iconBackground
+                visible: !shouldShowTitle
+                anchors.bottomMargin: -2
+                anchors.bottom: parent.bottom
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: 4
+                height: 4
+                color: taskbarItem.isFocused ? Color.mPrimary : Color.transparent
+                radius: Math.min(Style.radiusXXS, width / 2)
+              }
+            }
+
+            NText {
+              id: titleText
+              visible: shouldShowTitle
+              Layout.preferredWidth: root.titleWidth
+              Layout.preferredHeight: root.itemSize
+              Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
+              Layout.fillWidth: false
+
+              text: taskbarItem.title
+              elide: Text.ElideRight
+              verticalAlignment: Text.AlignVCenter
+              horizontalAlignment: Text.AlignLeft
+
+              pointSize: root.itemSize * 0.5
+              color: titleFgColor
+              opacity: Style.opacityFull
+            }
           }
         }
 
@@ -396,8 +496,14 @@ Rectangle {
               }
             }
           }
-          onEntered: TooltipService.show(taskbarItem, modelData.title || modelData.appId || "Unknown app.", BarService.getTooltipDirection())
-          onExited: TooltipService.hide()
+          onEntered: {
+            root.hoveredWindowId = taskbarItem.modelData.id;
+            TooltipService.show(taskbarItem, taskbarItem.title, BarService.getTooltipDirection());
+          }
+          onExited: {
+            root.hoveredWindowId = "";
+            TooltipService.hide();
+          }
         }
       }
     }

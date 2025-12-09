@@ -337,6 +337,10 @@
           "description": "Steuert das Verhalten des Widgets, wenn keine übereinstimmenden Fenster vorhanden sind.",
           "label": "Ausblendmodus"
         },
+        "max-width": {
+          "description": "Maximale Breite der Taskleiste als Prozentsatz der Bildschirmbreite.",
+          "label": "Maximale Breite"
+        },
         "only-active-workspaces": {
           "description": "Zeige nur Apps von aktiven Arbeitsbereichen.",
           "label": "Nur von aktiven Arbeitsbereichen"
@@ -348,6 +352,20 @@
         "show-pinned-apps": {
           "description": "Angeheftete Apps aus dem Dock in der Taskleiste anzeigen.",
           "label": "Angeheftete Apps anzeigen"
+        },
+        "show-title": {
+          "description": "Fenstertitel in der Taskleiste anzeigen.",
+          "description-disabled": "Vertikale Taskleiste unterstützt keine Titelanzeige.",
+          "label": "Titel anzeigen"
+        },
+        "smart-width": {
+          "description": "Breite der Einträge automatisch basierend auf der Anzahl der Einträge anpassen.",
+          "label": "Intelligente Breite"
+        },
+        "title-width": {
+          "description": "Breite der Fenstertitel in der Taskleiste festlegen (in Pixel).",
+          "label": "Titelbreite",
+          "reset-tooltip": "Titelbreite zurücksetzen"
         }
       },
       "taskbar-grouped": {
@@ -479,7 +497,7 @@
     }
   },
   "clock": {
-    "tooltip": "Kalender öffnen"
+    "tooltip": "Uhr"
   },
   "common": {
     "add": "Hinzufügen",
@@ -544,6 +562,7 @@
       "system": "System",
       "webbrowser": "Webbrowser"
     },
+    "delete": "Löschen",
     "pin": "Anheften",
     "unpin": "Lösen"
   },
@@ -741,6 +760,7 @@
     "clipboard-clear-description": "Gesamten Zwischenablageverlauf löschen",
     "clipboard-clear-description-full": "Alle Elemente aus dem Zwischenablageverlauf entfernen",
     "clipboard-clear-history": "Zwischenablageverlauf löschen",
+    "clipboard-delete": "Zwischenablageeintrag löschen",
     "clipboard-history-disabled": "Zwischenablageverlauf deaktiviert",
     "clipboard-history-disabled-description": "Zwischenablageverlauf in den Einstellungen aktivieren oder cliphist installieren",
     "clipboard-loading": "Lade Zwischenablageverlauf...",
@@ -848,7 +868,6 @@
         }
       },
       "noctalia": {
-        "download-latest": "Neueste Version herunterladen",
         "git-commit": "Git-Commit:",
         "git-commit-loading": "Lädt...",
         "installed-version": "Installierte Version:",
@@ -1350,6 +1369,10 @@
           "description": "Theme-Farben auf Dock-App-Symbole anwenden (nur nicht fokussierte Apps).",
           "label": "Symbole einfärben"
         },
+        "dead-opacity": {
+          "description": "Die Deckkraft von App-Symbolen anpassen, die nicht ausgeführt werden.",
+          "label": "Tote Opazität"
+        },
         "display": {
           "always-visible": "Immer sichtbar",
           "auto-hide": "Automatisch ausblenden",
@@ -1364,6 +1387,14 @@
         "icon-size": {
           "description": "Gesamtgröße des Docks anpassen.",
           "label": "Dock-Größe"
+        },
+        "inactive-indicators": {
+          "description": "Anzeige von Indikator-Pillen für alle Apps, nicht nur für die aktuell aktive.",
+          "label": "Laufende Indikatoren"
+        },
+        "pinned-static": {
+          "description": "Gepinnten App-Symbole immer in statischer Reihenfolge nach links schieben.",
+          "label": "Statische angeheftete Apps"
         },
         "section": {
           "description": "Verhalten und Erscheinungsbild des Docks anpassen.",
@@ -1436,7 +1467,7 @@
           "label": "Profil"
         },
         "select-avatar": "Avatar auswählen",
-        "tooltip": "Nach Avatarbild suchen"
+        "tooltip": "Profilbild"
       },
       "screen-corners": {
         "radius": {
@@ -1635,6 +1666,10 @@
         "description": "Die Option 'Ruhezustand' in den Energieaktionen anzeigen.",
         "label": "Ruhezustand anzeigen"
       },
+      "show-session-buttons": {
+        "description": "Zugriff auf die Energieeinstellungen vom Sperrbildschirm aus erlauben.",
+        "label": "Leistungsregler"
+      },
       "title": "Sperrbildschirm"
     },
     "network": {
@@ -1707,6 +1742,61 @@
         "section": {
           "description": "Erscheinungsbild und Verhalten von Benachrichtigungen konfigurieren.",
           "label": "Erscheinungsbild"
+        }
+      },
+      "sounds": {
+        "enabled": {
+          "description": "Soundeffekte für eingehende Benachrichtigungen aktivieren.",
+          "label": "Benachrichtigungstöne aktivieren"
+        },
+        "excluded-apps": {
+          "description": "Überspringen Sie das Abspielen der konfigurierten Benachrichtigungstöne für bestimmte Anwendungen, die ihre eigenen integrierten Töne haben.",
+          "label": "Ausgeschlossene Anwendungen",
+          "placeholder": "discord,firefox,chrome,chromium,edge"
+        },
+        "files": {
+          "critical": {
+            "description": "Pfad zur Sound-Datei, die für Benachrichtigungen mit kritischer Priorität abgespielt wird.",
+            "label": "Sound bei kritischer Dringlichkeit",
+            "select-title": "Sound-Datei für kritische Dringlichkeit auswählen"
+          },
+          "low": {
+            "description": "Pfad zur Sound-Datei, die für Benachrichtigungen mit niedriger Priorität abgespielt wird.",
+            "label": "Sound bei niedriger Dringlichkeit",
+            "select-title": "Sound-Datei für niedrige Dringlichkeit auswählen"
+          },
+          "normal": {
+            "description": "Pfad zur Sound-Datei, die für Benachrichtigungen mit normaler Priorität abgespielt wird.",
+            "label": "Sound bei normaler Dringlichkeit",
+            "select-title": "Sound-Datei für normale Dringlichkeit auswählen"
+          },
+          "placeholder": "Pfad zur Sound-Datei eingeben",
+          "section": {
+            "description": "Benutzerdefinierte Sound-Dateien für verschiedene Benachrichtigungsdringlichkeitsstufen konfigurieren.",
+            "label": "Sound-Dateien"
+          },
+          "select-file": "Sound-Datei auswählen",
+          "unified": {
+            "description": "Pfad zur Sound-Datei, die für Benachrichtigungen abgespielt wird.",
+            "label": "Benachrichtigungssound",
+            "select-title": "Benachrichtigungssound-Datei auswählen"
+          }
+        },
+        "section": {
+          "description": "Benachrichtigungs-Soundeffekte und Lautstärke konfigurieren.",
+          "label": "Sound-Einstellungen"
+        },
+        "separate": {
+          "description": "Unterschiedliche Sound-Dateien für niedrige, normale und kritische Benachrichtigungsprioritäten verwenden.",
+          "label": "Verschiedene Sounds pro Priorität verwenden"
+        },
+        "unavailable": {
+          "description": "Installieren Sie Qt6 Multimedia, um Benachrichtigungstöne zu aktivieren.",
+          "label": "Benachrichtigungstöne nicht verfügbar"
+        },
+        "volume": {
+          "description": "Lautstärke für Benachrichtigungstöne anpassen.",
+          "label": "Sound-Lautstärke"
         }
       },
       "title": "Benachrichtigungen",
@@ -1873,7 +1963,7 @@
         "output-folder": {
           "description": "Ordner, in dem Bildschirmaufnahmen gespeichert werden.",
           "label": "Ausgabe-Ordner",
-          "tooltip": "Nach Ausgabe-Ordner suchen"
+          "tooltip": "Ausgabe-Ordner"
         },
         "section": {
           "description": "Bildschirmaufnahme-Ausgabe und -Inhalt verwalten.",
@@ -2035,7 +2125,7 @@
     "user-interface": {
       "allow-panels-without-bar": {
         "description": "Wenn aktiviert, können sich Panels auf jedem Bildschirm öffnen. Wenn deaktiviert, öffnen sich Panels nur auf Bildschirmen mit einer Leiste, was den Speicherverbrauch reduzieren kann.",
-        "label": "Paneele auf Bildschirmen ohne Leiste zulassen"
+        "label": "Panels auf Bildschirmen ohne Leiste zulassen"
       },
       "animation-disable": {
         "description": "Deaktivieren Sie alle Animationen für eine schnellere und reaktionsfreudigere Erfahrung.",
@@ -2066,12 +2156,12 @@
         "reset": "Deckkraft des gedimmten Desktops zurücksetzen"
       },
       "panel-background-opacity": {
-        "description": "Hintergrunddeckkraft für alle Paneele festlegen (Launcher, Kontrollzentrum, Einstellungen usw.).",
-        "label": "Paneel-Hintergrunddeckkraft"
+        "description": "Hintergrunddeckkraft für alle Panels festlegen (Launcher, Kontrollzentrum, Einstellungen usw.).",
+        "label": "Panel-Hintergrunddeckkraft"
       },
       "panels-attached-to-bar": {
-        "description": "Die Paneele rasten an der Stange und den Bildschirmrändern ein und sorgen so für ein nahtloses Erscheinungsbild mit stilvollen, umgekehrten Ecken.",
-        "label": "Paneele an Kanten ausrichten"
+        "description": "Die Panels rasten an der Stange und den Bildschirmrändern ein und sorgen so für ein nahtloses Erscheinungsbild mit stilvollen, umgekehrten Ecken.",
+        "label": "Panels an Kanten ausrichten"
       },
       "panels-overlay": {
         "description": "Stellt sicher, dass Panels und die Leiste sichtbar bleiben, auch über Vollbildanwendungen.",
@@ -2159,7 +2249,7 @@
         "folder": {
           "description": "Pfad zu Ihrem Haupt-Hintergrundbild-Ordner.",
           "label": "Hintergrundbild-Ordner",
-          "tooltip": "Nach Hintergrundbild-Ordner suchen"
+          "tooltip": "Hintergrundbild-Ordner"
         },
         "hide-wallpaper-filenames": {
           "description": "Hintergrundbilddateinamen im Auswahlmenü ausblenden.",
@@ -2168,7 +2258,7 @@
         "monitor-specific": {
           "description": "Unterschiedlichen Hintergrundbild-Ordner für jeden Monitor festlegen.",
           "label": "Monitor-spezifische Verzeichnisse",
-          "tooltip": "Nach Hintergrundbild-Ordner suchen"
+          "tooltip": "Monitor-Hintergrundbild-Ordner"
         },
         "recursive-search": {
           "description": "Auch nach Hintergrundbildern in Unterordnern des Hintergrundbild-Verzeichnisses suchen.",
@@ -2183,7 +2273,7 @@
         "selector": {
           "description": "Wählen Sie Ihr Hintergrundbild aus.",
           "label": "Hintergrundbild-Auswahl",
-          "tooltip": "Hintergrundbild-Auswahl öffnen"
+          "tooltip": "Hintergrundbild-Auswahl"
         },
         "selector-position": {
           "description": "Wählen Sie aus, wo das Hintergrundbild-Auswahlfeld angezeigt wird.",
@@ -2347,7 +2437,7 @@
     "clear-history": "Verlauf löschen",
     "click-to-start-recording": "Bildschirmrekorder (Aufnahme starten)",
     "click-to-stop-recording": "Bildschirmrekorder (Aufnahme stoppen)",
-    "close": "Schließen-Button",
+    "close": "Schließen",
     "connect-disconnect-devices": "Bluetooth-Gerät",
     "delete-notification": "Benachrichtigung löschen",
     "disable-keep-awake": "Wach halten",
@@ -2384,8 +2474,8 @@
     "open-tray-dropdown": "System-Tray",
     "open-wallpaper-selector": "Hintergrundbild-Auswahl",
     "output-muted": "Audio-Ausgabe",
-    "pause": "Pause-Button",
-    "play": "Wiedergabe-Button",
+    "pause": "Pause",
+    "play": "Wiedergabe",
     "power-profile": "{profile} Energieprofil",
     "previous-media": "Vorheriger Titel",
     "previous-month": "Vorheriger Monat",

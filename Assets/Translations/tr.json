@@ -337,6 +337,10 @@
           "description": "Eşleşen pencere olmadığında araç takımının nasıl davrandığını kontrol eder.",
           "label": "Gizleme modu"
         },
+        "max-width": {
+          "description": "Görev çubuğunun ekran genişliğine göre maksimum genişliği yüzdesi.",
+          "label": "Maksimum genişlik"
+        },
         "only-active-workspaces": {
           "description": "Sadece aktif çalışma alanlarından uygulamaları göster.",
           "label": "Sadece aktif çalışma alanlarından"
@@ -348,6 +352,20 @@
         "show-pinned-apps": {
           "description": "Dock'taki sabitlenmiş uygulamaları görev çubuğunda göster.",
           "label": "Sabitlenmiş uygulamaları göster"
+        },
+        "show-title": {
+          "description": "Görev çubuğunda pencere başlıklarını göster.",
+          "description-disabled": "Dikey görev çubuğu başlık göstermeyi desteklemiyor.",
+          "label": "Başlığı göster"
+        },
+        "smart-width": {
+          "description": "Girdi sayısına göre girdi genişliğini otomatik olarak ayarla.",
+          "label": "Akıllı genişlik"
+        },
+        "title-width": {
+          "description": "Görev çubuğundaki pencere başlıklarının genişliğini ayarla (piksel olarak).",
+          "label": "Başlık genişliği",
+          "reset-tooltip": "Başlık genişliğini sıfırla"
         }
       },
       "taskbar-grouped": {
@@ -479,7 +497,7 @@
     }
   },
   "clock": {
-    "tooltip": "Takvimi aç"
+    "tooltip": "Saat"
   },
   "common": {
     "add": "Ekle",
@@ -544,6 +562,7 @@
       "system": "Sistem",
       "webbrowser": "Tarayıcı"
     },
+    "delete": "Sil",
     "pin": "Sabitle",
     "unpin": "Sabitlemeyi kaldır"
   },
@@ -741,6 +760,7 @@
     "clipboard-clear-description": "Tüm panoya geçmişini temizle",
     "clipboard-clear-description-full": "Tüm öğeleri panoya geçmişinden kaldır",
     "clipboard-clear-history": "Panoya geçmişini temizle",
+    "clipboard-delete": "Panodaki öğeyi sil",
     "clipboard-history-disabled": "Panoya geçmişi devre dışı",
     "clipboard-history-disabled-description": "Panoya geçmişini ayarlarda etkinleştir veya cliphist kur",
     "clipboard-loading": "Panoya geçmişi yükleniyor...",
@@ -848,7 +868,6 @@
         }
       },
       "noctalia": {
-        "download-latest": "En son sürümü indir",
         "git-commit": "Git commit:",
         "git-commit-loading": "Yükleniyor...",
         "installed-version": "Yüklü sürüm:",
@@ -1350,6 +1369,10 @@
           "description": "Rıhtım uygulama simgelerine tema renklerini uygulayın (sadece odaklanılmamış uygulamalar).",
           "label": "Simgeleri Renklendir"
         },
+        "dead-opacity": {
+          "description": "Çalışmayan uygulama simgelerinin opaklığını ayarlayın.",
+          "label": "Ölü Opaklık"
+        },
         "display": {
           "always-visible": "Her zaman görünür",
           "auto-hide": "Otomatik gizle",
@@ -1364,6 +1387,14 @@
         "icon-size": {
           "description": "Rıhtımın genel boyutunu ayarlayın.",
           "label": "Rıhtım boyutu"
+        },
+        "inactive-indicators": {
+          "description": "Tüm uygulamalar için, sadece etkin olan için değil, gösterge haplarını göster.",
+          "label": "Çalışan Göstergeler"
+        },
+        "pinned-static": {
+          "description": "Sabit sırada, sabitlenmiş uygulama simgelerini her zaman sola itin.",
+          "label": "Sabitlenmiş Statik Uygulamalar"
         },
         "section": {
           "description": "Rıhtımın davranışını ve görünümünü özelleştirin.",
@@ -1436,7 +1467,7 @@
           "label": "Profil"
         },
         "select-avatar": "Avatar görüntüsü seç",
-        "tooltip": "Avatar resmi ara"
+        "tooltip": "Profil resmi"
       },
       "screen-corners": {
         "radius": {
@@ -1635,6 +1666,10 @@
         "description": "Güç işlemlerinde 'hazırda beklet' seçeneğini göster.",
         "label": "Hazırda beklet seçeneğini göster"
       },
+      "show-session-buttons": {
+        "description": "Kilit ekranından güç ayarlarına erişime izin ver.",
+        "label": "Güç kontrolleri"
+      },
       "title": "Ekran Kilit"
     },
     "network": {
@@ -1707,6 +1742,61 @@
         "section": {
           "description": "Bildirimlerin görünümünü ve davranışını yapılandırın.",
           "label": "Görünüm"
+        }
+      },
+      "sounds": {
+        "enabled": {
+          "description": "Gelen bildirimler için ses efektlerini etkinleştir.",
+          "label": "Bildirim seslerini etkinleştir"
+        },
+        "excluded-apps": {
+          "description": "Kendi dahili seslerine sahip belirli uygulamalar için ayarlanan bildirim sesini çalmayı es geçin.",
+          "label": "Hariç tutulan uygulamalar",
+          "placeholder": "discord,firefox,chrome,chromium,edge"
+        },
+        "files": {
+          "critical": {
+            "description": "Kritik öncelikli bildirimler için çalınan ses dosyasının yolu.",
+            "label": "Kritik aciliyet sesi",
+            "select-title": "Kritik Aciliyet Ses Dosyası Seç"
+          },
+          "low": {
+            "description": "Düşük öncelikli bildirimler için çalınan ses dosyasının yolu.",
+            "label": "Düşük aciliyet sesi",
+            "select-title": "Düşük Aciliyet Ses Dosyası Seç"
+          },
+          "normal": {
+            "description": "Normal öncelikli bildirimler için çalınan ses dosyasının yolu.",
+            "label": "Normal aciliyet sesi",
+            "select-title": "Normal Aciliyet Ses Dosyası Seç"
+          },
+          "placeholder": "Ses dosyası yolunu girin",
+          "section": {
+            "description": "Farklı bildirim aciliyet seviyeleri için özel ses dosyaları yapılandırın.",
+            "label": "Ses dosyaları"
+          },
+          "select-file": "Ses Dosyası Seç",
+          "unified": {
+            "description": "Bildirimler için çalınan ses dosyasının yolu.",
+            "label": "Bildirim sesi",
+            "select-title": "Bildirim Ses Dosyası Seç"
+          }
+        },
+        "section": {
+          "description": "Bildirim ses efektlerini ve ses seviyesini yapılandırın.",
+          "label": "Ses ayarları"
+        },
+        "separate": {
+          "description": "Düşük, normal ve kritik öncelikli bildirimler için farklı ses dosyaları kullanın.",
+          "label": "Öncelik başına farklı sesler kullan"
+        },
+        "unavailable": {
+          "description": "Bildirim seslerini etkinleştirmek için Qt6 Multimedia'yı kurun.",
+          "label": "Bildirim sesleri kullanılamıyor"
+        },
+        "volume": {
+          "description": "Bildirim sesleri için ses seviyesini ayarlayın.",
+          "label": "Ses seviyesi"
         }
       },
       "title": "Bildirimler",
@@ -1873,7 +1963,7 @@
         "output-folder": {
           "description": "Ekran kayıtlarının kaydedileceği klasör.",
           "label": "Çıktı klasörü",
-          "tooltip": "Çıktı klasörüne göz at"
+          "tooltip": "Çıktı klasörü"
         },
         "section": {
           "description": "Ekran kaydı çıktısını ve içeriğini yönetin.",
@@ -2159,7 +2249,7 @@
         "folder": {
           "description": "Ana duvar kağıdı klasörünüzün yolu.",
           "label": "Duvar kağıdı klasörü",
-          "tooltip": "Duvar kağıdı klasörüne göz atın"
+          "tooltip": "Duvar kağıdı klasörü"
         },
         "hide-wallpaper-filenames": {
           "description": "Seçicide duvar kağıdı dosya adlarını gizle.",
@@ -2168,7 +2258,7 @@
         "monitor-specific": {
           "description": "Her ekran için farklı bir duvar kağıdı klasörü ayarlayın.",
           "label": "Ekran özgü dizinler",
-          "tooltip": "Duvar kağıdı klasörüne göz atın"
+          "tooltip": "Monitör duvar kâğıdı klasörü"
         },
         "recursive-search": {
           "description": "Duvar kağıdı dizinin alt klasörlerinde de duvar kağıdı arayın.",
@@ -2183,7 +2273,7 @@
         "selector": {
           "description": "Duvar kâğıdınızı seçin.",
           "label": "Duvar kâğıdı seçici",
-          "tooltip": "Duvar kâğıdı seçiciyi aç"
+          "tooltip": "Duvar kâğıdı seçici"
         },
         "selector-position": {
           "description": "Duvar kağıdı seçici panelinin nerede görüneceğini seçin.",
@@ -2347,7 +2437,7 @@
     "clear-history": "Geçmişi temizle",
     "click-to-start-recording": "Ekran kaydedici (kaydı başlat)",
     "click-to-stop-recording": "Ekran kaydedici (kaydı durdur)",
-    "close": "Kapat düğmesi",
+    "close": "Kapat",
     "connect-disconnect-devices": "Bluetooth cihazı",
     "delete-notification": "Bildiriyi sil",
     "disable-keep-awake": "Uyanık kal",
@@ -2384,8 +2474,8 @@
     "open-tray-dropdown": "Sistem tepsisi",
     "open-wallpaper-selector": "Duvar kağıdı seçici",
     "output-muted": "Ses çıkışı",
-    "pause": "Duraklat düğmesi",
-    "play": "Oynat düğmesi",
+    "pause": "Duraklat",
+    "play": "Oynat",
     "power-profile": "{profile} güç profili",
     "previous-media": "Önceki parça",
     "previous-month": "Önceki ay",
