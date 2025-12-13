@@ -200,6 +200,7 @@ Item {
     }
     function muteInput() {
       AudioService.setInputMuted(!AudioService.inputMuted);
+      ToastService.showNotice("Microphone Muted: ", AudioService.inputMuted)
     }
   }
 
