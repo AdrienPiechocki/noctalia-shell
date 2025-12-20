@@ -23,7 +23,7 @@ Singleton {
   - Default cache directory: ~/.cache/noctalia
   */
   readonly property alias data: adapter  // Used to access via Settings.data.xxx.yyy
-  readonly property int settingsVersion: 27
+  readonly property int settingsVersion: 31
   readonly property bool isDebug: Quickshell.env("NOCTALIA_DEBUG") === "1"
   readonly property string shellName: "noctalia"
   readonly property string configDir: Quickshell.env("NOCTALIA_CONFIG_DIR") || (Quickshell.env("XDG_CONFIG_HOME") || Quickshell.env("HOME") + "/.config") + "/" + shellName + "/"
@@ -51,6 +51,9 @@ Singleton {
 
     Quickshell.execDetached(["mkdir", "-p", cacheDirImagesWallpapers]);
     Quickshell.execDetached(["mkdir", "-p", cacheDirImagesNotifications]);
+
+    // Ensure PAM config file exists in configDir (create once, never override)
+    ensurePamConfig();
 
     // Mark directories as created and trigger file loading
     directoriesCreated = true;
@@ -148,6 +151,30 @@ Singleton {
     watchChanges: false
   }
 
+  // FileView to load default settings for comparison
+  FileView {
+    id: defaultSettingsFileView
+    path: Quickshell.shellDir + "/Assets/settings-default.json"
+    printErrors: false
+    watchChanges: false
+  }
+
+  // Cached default settings object
+  property var _defaultSettings: null
+
+  // Load default settings when file is loaded
+  Connections {
+    target: defaultSettingsFileView
+    function onLoaded() {
+      try {
+        root._defaultSettings = JSON.parse(defaultSettingsFileView.text());
+      } catch (e) {
+        Logger.w("Settings", "Failed to parse default settings file: " + e);
+        root._defaultSettings = null;
+      }
+    }
+  }
+
   JsonAdapter {
     id: adapter
 
@@ -156,9 +183,10 @@ Singleton {
     // bar
     property JsonObject bar: JsonObject {
       property string position: "top" // "top", "bottom", "left", or "right"
-      property real backgroundOpacity: 1.0
       property list<string> monitors: [] // holds bar visibility per monitor
       property string density: "default" // "compact", "default", "comfortable"
+      property bool transparent: false
+      property bool showOutline: false
       property bool showCapsule: true
       property real capsuleOpacity: 1.0
 
@@ -230,7 +258,7 @@ Singleton {
     // general
     property JsonObject general: JsonObject {
       property string avatarImage: ""
-      property real dimmerOpacity: 0.6
+      property real dimmerOpacity: 0.2
       property bool showScreenCorners: false
       property bool forceBlackScreenCorners: false
       property real scaleRatio: 1.0
@@ -259,7 +287,7 @@ Singleton {
       property real fontDefaultScale: 1.0
       property real fontFixedScale: 1.0
       property bool tooltipsEnabled: true
-      property real panelBackgroundOpacity: 1.0
+      property real panelBackgroundOpacity: 0.85
       property bool panelsAttachedToBar: true
       property string settingsPanelMode: "attached" // "centered", "attached", "window"
     }
@@ -338,6 +366,7 @@ Singleton {
       property string wallhavenOrder: "desc"
       property string wallhavenCategories: "111" // general,anime,people
       property string wallhavenPurity: "100" // sfw only
+      property string wallhavenRatios: ""
       property string wallhavenResolutionMode: "atleast" // "atleast" or "exact"
       property string wallhavenResolutionWidth: ""
       property string wallhavenResolutionHeight: ""
@@ -409,6 +438,10 @@ Singleton {
           "enabled": true
         },
         {
+          "id": "brightness-card",
+          "enabled": false
+        },
+        {
           "id": "weather-card",
           "enabled": true
         },
@@ -425,12 +458,16 @@ Singleton {
       property int cpuCriticalThreshold: 90
       property int tempWarningThreshold: 80
       property int tempCriticalThreshold: 90
+      property int gpuWarningThreshold: 80
+      property int gpuCriticalThreshold: 90
       property int memWarningThreshold: 80
       property int memCriticalThreshold: 90
       property int diskWarningThreshold: 80
       property int diskCriticalThreshold: 90
       property int cpuPollingInterval: 3000
       property int tempPollingInterval: 3000
+      property int gpuPollingInterval: 3000
+      property bool enableNvidiaGpu: false // Opt-in: nvidia-smi wakes dGPU on laptops, draining battery
       property int memPollingInterval: 3000
       property int diskPollingInterval: 3000
       property int networkPollingInterval: 3000
@@ -455,6 +492,7 @@ Singleton {
       property bool pinnedStatic: false
       property bool inactiveIndicators: false
       property double deadOpacity: 0.6
+      property real animationSpeed: 1.0 // Speed multiplier for hide/show animations (0.1 = slowest, 2.0 = fastest)
     }
 
     // network
@@ -468,6 +506,7 @@ Singleton {
       property int countdownDuration: 10000
       property string position: "center"
       property bool showHeader: true
+      property bool largeButtonsStyle: false
       property list<var> powerOptions: [
         {
           "action": "lock",
@@ -526,7 +565,7 @@ Singleton {
       property int autoHideMs: 2000
       property bool overlayLayer: true
       property real backgroundOpacity: 1.0
-      property list<var> enabledTypes: [OSD.Type.Volume, OSD.Type.InputVolume, OSD.Type.Brightness]
+      property list<var> enabledTypes: [OSD.Type.Volume, OSD.Type.InputVolume, OSD.Type.Brightness, OSD.Type.CustomText]
       property list<string> monitors: [] // holds osd visibility per monitor
     }
 
@@ -579,8 +618,11 @@ Singleton {
       property bool spicetify: false
       property bool telegram: false
       property bool cava: false
+      property bool yazi: false
       property bool emacs: false
       property bool niri: false
+      property bool mango: false
+      property bool zed: false
       property bool enableUserTemplates: false
     }
 
@@ -600,6 +642,19 @@ Singleton {
       property bool enabled: false
       property string wallpaperChange: ""
       property string darkModeChange: ""
+      property string screenLock: ""
+      property string screenUnlock: ""
+      property string performanceModeEnabled: ""
+      property string performanceModeDisabled: ""
+    }
+
+    // desktop widgets
+    property JsonObject desktopWidgets: JsonObject {
+      property bool enabled: false
+      property bool editMode: false
+      property bool gridSnap: false
+      property list<var> monitorWidgets: []
+      // Format: [{ "name": "DP-1", "widgets": [...] }, { "name": "HDMI-1", "widgets": [...] }]
     }
 
     // floating panels
@@ -624,6 +679,70 @@ Singleton {
     }
 
     return path;
+  }
+
+  // -----------------------------------------------------
+  // Get default value for a setting path (e.g., "general.scaleRatio" or "bar.position")
+  // Returns undefined if not found
+  function getDefaultValue(path) {
+    if (!root._defaultSettings) {
+      return undefined;
+    }
+
+    var parts = path.split(".");
+    var current = root._defaultSettings;
+
+    for (var i = 0; i < parts.length; i++) {
+      if (current === undefined || current === null) {
+        return undefined;
+      }
+      current = current[parts[i]];
+    }
+
+    return current;
+  }
+
+  // -----------------------------------------------------
+  // Compare current value with default value
+  // Returns true if values differ, false if they match or default is not found
+  function isValueChanged(path, currentValue) {
+    var defaultValue = getDefaultValue(path);
+    if (defaultValue === undefined) {
+      return false; // Can't compare if default not found
+    }
+
+    // Deep comparison for objects and arrays
+    if (typeof currentValue === "object" && typeof defaultValue === "object") {
+      return JSON.stringify(currentValue) !== JSON.stringify(defaultValue);
+    }
+
+    // Simple comparison for primitives
+    return currentValue !== defaultValue;
+  }
+
+  // -----------------------------------------------------
+  // Format default value for tooltip display
+  // Returns a human-readable string representation of the default value
+  function formatDefaultValueForTooltip(path) {
+    var defaultValue = getDefaultValue(path);
+    if (defaultValue === undefined) {
+      return "";
+    }
+
+    // Format based on type
+    if (typeof defaultValue === "boolean") {
+      return defaultValue ? "true" : "false";
+    } else if (typeof defaultValue === "number") {
+      return defaultValue.toString();
+    } else if (typeof defaultValue === "string") {
+      return defaultValue === "" ? "(empty)" : defaultValue;
+    } else if (Array.isArray(defaultValue)) {
+      return defaultValue.length === 0 ? "(empty)" : "[" + defaultValue.length + " items]";
+    } else if (typeof defaultValue === "object") {
+      return "(object)";
+    }
+
+    return String(defaultValue);
   }
 
   // -----------------------------------------------------
@@ -749,6 +868,56 @@ Singleton {
         if (upgradeWidget(widget)) {
           Logger.d("Settings", `Upgraded ${widget.id} widget:`, JSON.stringify(widget));
         }
+      }
+    }
+  }
+
+  // -----------------------------------------------------
+  // Ensure PAM password.conf exists in configDir (create once, never override)
+  function ensurePamConfig() {
+    var pamConfigDir = configDir + "pam";
+    var pamConfigFile = pamConfigDir + "/password.conf";
+
+    // Check if file already exists
+    fileCheckPamProcess.command = ["sh", "-c", `grep -q '^ID=nixos' /etc/os-release || test -f ${pamConfigFile}`];
+    fileCheckPamProcess.running = true;
+  }
+
+  function doCreatePamConfig() {
+    var pamConfigDir = configDir + "pam";
+    var pamConfigFile = pamConfigDir + "/password.conf";
+    var pamConfigDirEsc = pamConfigDir.replace(/'/g, "'\\''");
+    var pamConfigFileEsc = pamConfigFile.replace(/'/g, "'\\''");
+
+    // Ensure directory exists
+    Quickshell.execDetached(["mkdir", "-p", pamConfigDir]);
+
+    // Generate the PAM config file content
+    var configContent = "#auth sufficient pam_fprintd.so max-tries=1\n";
+    configContent += "# only uncomment this if you have a fingerprint reader\n";
+    configContent += "auth required pam_unix.so\n";
+
+    // Write the config file using heredoc to avoid escaping issues
+    var script = `cat > '${pamConfigFileEsc}' << 'EOF'\n`;
+    script += configContent;
+    script += "EOF\n";
+    Quickshell.execDetached(["sh", "-c", script]);
+
+    Logger.d("Settings", "PAM config file created at:", pamConfigFile);
+  }
+
+  // Process for checking if PAM config file exists
+  Process {
+    id: fileCheckPamProcess
+    running: false
+
+    onExited: function (exitCode) {
+      if (exitCode === 0) {
+        // File exists, skip creation
+        Logger.d("Settings", "On NixOS or PAM config file already exists, skipping creation");
+      } else {
+        // File doesn't exist, create it
+        doCreatePamConfig();
       }
     }
   }

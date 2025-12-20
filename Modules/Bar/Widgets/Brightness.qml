@@ -100,13 +100,9 @@ Item {
                    }
 
                    if (action === "open-display-settings") {
-                     if (Settings.data.ui.settingsPanelMode === "window") {
-                       SettingsPanelService.openWindow(SettingsPanel.Tab.Display);
-                     } else {
-                       var settingsPanel = PanelService.getPanel("settingsPanel", screen);
-                       settingsPanel.requestedTab = SettingsPanel.Tab.Display;
-                       settingsPanel.open();
-                     }
+                     var settingsPanel = PanelService.getPanel("settingsPanel", screen);
+                     settingsPanel.requestedTab = SettingsPanel.Tab.Display;
+                     settingsPanel.open();
                    } else if (action === "widget-settings") {
                      BarService.openWidgetSettings(screen, section, sectionWidgetIndex, widgetId, widgetSettings);
                    }
@@ -155,8 +151,7 @@ Item {
       var popupMenuWindow = PanelService.getPopupMenuWindow(screen);
       if (popupMenuWindow) {
         popupMenuWindow.showContextMenu(contextMenu);
-        const pos = BarService.getContextMenuPosition(pill, contextMenu.implicitWidth, contextMenu.implicitHeight);
-        contextMenu.openAtItem(pill, pos.x, pos.y);
+        contextMenu.openAtItem(pill, screen);
       }
     }
   }

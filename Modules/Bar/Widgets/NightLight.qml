@@ -22,6 +22,8 @@ NIconButton {
   colorFg: Settings.data.nightLight.forced ? Color.mOnPrimary : Color.mOnSurface
   colorBorder: Color.transparent
   colorBorderHover: Color.transparent
+  border.color: Style.capsuleBorderColor
+  border.width: Style.capsuleBorderWidth
 
   icon: Settings.data.nightLight.enabled ? (Settings.data.nightLight.forced ? "nightlight-forced" : "nightlight-on") : "nightlight-off"
   tooltipText: Settings.data.nightLight.enabled ? (Settings.data.nightLight.forced ? I18n.tr("tooltips.night-light-forced") : I18n.tr("tooltips.night-light-enabled")) : I18n.tr("tooltips.night-light-disabled")
@@ -45,12 +47,8 @@ NIconButton {
   }
 
   onRightClicked: {
-    if (Settings.data.ui.settingsPanelMode === "window") {
-      SettingsPanelService.openWindow(SettingsPanel.Tab.Display);
-    } else {
-      var settingsPanel = PanelService.getPanel("settingsPanel", screen);
-      settingsPanel.requestedTab = SettingsPanel.Tab.Display;
-      settingsPanel.open();
-    }
+    var settingsPanel = PanelService.getPanel("settingsPanel", screen);
+    settingsPanel.requestedTab = SettingsPanel.Tab.Display;
+    settingsPanel.open();
   }
 }

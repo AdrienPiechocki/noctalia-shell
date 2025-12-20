@@ -253,13 +253,9 @@ SmartPanel {
               tooltipText: I18n.tr("settings.wallpaper.settings.section.label")
               baseSize: Style.baseWidgetSize * 0.8
               onClicked: {
-                if (Settings.data.ui.settingsPanelMode === "window") {
-                  SettingsPanelService.openWindow(SettingsPanel.Tab.Wallpaper);
-                } else {
-                  var settingsPanel = PanelService.getPanel("settingsPanel", screen);
-                  settingsPanel.requestedTab = SettingsPanel.Tab.Wallpaper;
-                  settingsPanel.open();
-                }
+                var settingsPanel = PanelService.getPanel("settingsPanel", screen);
+                settingsPanel.requestedTab = SettingsPanel.Tab.Wallpaper;
+                settingsPanel.open();
               }
             }
 
@@ -312,6 +308,7 @@ SmartPanel {
               NTabButton {
                 required property var modelData
                 required property int index
+                Layout.fillWidth: true
                 text: modelData.name || `Screen ${index + 1}`
                 tabIndex: index
                 checked: {

@@ -58,6 +58,7 @@ Item {
   implicitWidth: !shouldShow ? 0 : isVerticalBar ? Style.capsuleHeight : visualizerWidth
   implicitHeight: !shouldShow ? 0 : isVerticalBar ? visualizerWidth : Style.capsuleHeight
   visible: shouldShow
+  opacity: shouldShow ? 1.0 : 0.0
 
   Behavior on implicitWidth {
     NumberAnimation {
@@ -77,6 +78,8 @@ Item {
     anchors.fill: parent
     radius: Style.radiusS
     color: Style.capsuleColor
+    border.color: Style.capsuleBorderColor
+    border.width: Style.capsuleBorderWidth
   }
 
   // Store visualizer type to force re-evaluation
@@ -151,8 +154,7 @@ Item {
                    var popupMenuWindow = PanelService.getPopupMenuWindow(screen);
                    if (popupMenuWindow) {
                      popupMenuWindow.showContextMenu(contextMenu);
-                     const pos = BarService.getContextMenuPosition(root, contextMenu.implicitWidth, contextMenu.implicitHeight);
-                     contextMenu.openAtItem(root, pos.x, pos.y);
+                     contextMenu.openAtItem(root, screen);
                    }
                  } else {
                    const types = ["linear", "mirrored", "wave"];

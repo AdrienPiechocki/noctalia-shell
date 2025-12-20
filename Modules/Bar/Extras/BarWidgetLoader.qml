@@ -15,8 +15,8 @@ Item {
   readonly property real scaling: barDensity === "mini" ? 0.8 : (barDensity === "compact" ? 0.9 : 1.0)
 
   // Extract section info from widgetProps
-  readonly property string section: widgetProps.section || ""
-  readonly property int sectionIndex: widgetProps.sectionWidgetIndex || 0
+  readonly property string section: widgetProps ? (widgetProps.section || "") : ""
+  readonly property int sectionIndex: widgetProps ? (widgetProps.sectionWidgetIndex || 0) : 0
 
   // Don't reserve space unless the loaded widget is really visible
   implicitWidth: getImplicitSize(loader.item, "implicitWidth")
@@ -46,11 +46,39 @@ Item {
     }
   }
 
+  // Only load if widget exists in registry
+  function checkWidgetExists(): bool {
+    return root.widgetId !== "" && BarWidgetRegistry.hasWidget(root.widgetId);
+  }
+
+  // Force reload counter - incremented when plugin widget registry changes
+  property int reloadCounter: 0
+
+  // Listen for plugin widget registry changes to force reload
+  Connections {
+    target: BarWidgetRegistry
+    enabled: BarWidgetRegistry.isPluginWidget(root.widgetId)
+
+    function onPluginWidgetRegistryUpdated() {
+      // Force the loader to reload by toggling active
+      if (BarWidgetRegistry.hasWidget(root.widgetId)) {
+        root.reloadCounter++;
+        Logger.d("BarWidgetLoader", "Plugin widget registry updated, reloading:", root.widgetId);
+      }
+    }
+  }
+
   Loader {
     id: loader
     anchors.fill: parent
     asynchronous: false
-    sourceComponent: BarWidgetRegistry.getWidget(widgetId)
+    // Include reloadCounter in the binding to force re-evaluation
+    active: root.checkWidgetExists() && (root.reloadCounter >= 0)
+    sourceComponent: {
+      // Depend on reloadCounter to force re-fetch of component
+      var _ = root.reloadCounter;
+      return root.checkWidgetExists() ? BarWidgetRegistry.getWidget(root.widgetId) : null;
+    }
 
     onLoaded: {
       if (!item)
