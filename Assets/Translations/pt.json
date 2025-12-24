@@ -55,6 +55,10 @@
           "description": "Escolha como você gostaria que este valor aparecesse.",
           "label": "Modo de exibição"
         },
+        "hide-if-not-detected": {
+          "description": "Oculte o widget quando nenhuma bateria for detectada no sistema.",
+          "label": "Ocultar se não detectado."
+        },
         "low-battery-threshold": {
           "description": "Mostrar um aviso quando a bateria cair abaixo desta porcentagem.",
           "label": "Limite de aviso de bateria fraca"
@@ -449,18 +453,28 @@
   "bluetooth": {
     "panel": {
       "available-devices": "Dispositivos disponíveis",
+      "battery": "Bateria",
       "blocked": "Bloqueado",
       "connect": "Conectar",
       "connected-devices": "Dispositivos conectados",
       "connecting": "Conectando...",
+      "device-address": "Endereço do dispositivo",
       "disabled": "O Bluetooth está desativado",
       "disconnect": "Desconectar",
+      "discoverable": "Visível",
       "enable-message": "Ative o Bluetooth para ver os dispositivos disponíveis.",
+      "info": "Informações",
       "known-devices": "Dispositivos conhecidos",
+      "pair": "Emparelhar",
+      "paired": "Emparelhado",
+      "paired-devices": "Dispositivos emparelhados",
       "pairing": "Emparelhamento...",
       "pairing-mode": "Certifique-se de que seu dispositivo está em modo de pareamento.",
       "scanning": "Procurando por dispositivos...",
-      "title": "Bluetooth"
+      "signal": "Sinal",
+      "title": "Bluetooth",
+      "trusted": "Confiável",
+      "unpair": "Desemparelhar"
     }
   },
   "calendar": {
@@ -520,7 +534,9 @@
     "cancel": "Cancelar",
     "check-settings": "Verifique as configurações para obter detalhes.",
     "close": "Fechar",
-    "save": "Salvar"
+    "no": "Não",
+    "save": "Salvar",
+    "yes": "Sim"
   },
   "context-menu": {
     "clear-history": "Limpar histórico",
@@ -568,6 +584,18 @@
       "chat": "Bate-papo",
       "development": "Desenvolvimento",
       "education": "Educação",
+      "emoji": {
+        "activity": "Atividade",
+        "animals": "Animais",
+        "flags": "Bandeiras",
+        "food": "Comida e bebida",
+        "nature": "Natureza",
+        "objects": "Objetos",
+        "people": "Pessoas e corpo",
+        "recent": "Recentes",
+        "symbols": "Símbolos",
+        "travel": "Viagens e lugares"
+      },
       "game": "Jogos",
       "graphics": "Gráficos",
       "misc": "Diversos",
@@ -1149,14 +1177,15 @@
       "templates": {
         "compositors": {
           "description": "Tematização do compositor.",
+          "hyprland": {
+            "description": "Escreva {filepath}."
+          },
           "label": "Compositores",
           "mango": {
-            "description": "Escrever {filepath}. Requer mango",
-            "description-missing": "Requer que o {app} esteja instalado."
+            "description": "Escrever {filepath}. Requer mango"
           },
           "niri": {
-            "description": "Escrever {filepath}. Requer Niri v25.11+",
-            "description-missing": "Requer que o {app} esteja instalado."
+            "description": "Escrever {filepath}. Requer Niri v25.11+"
           }
         },
         "misc": {
@@ -1169,54 +1198,42 @@
         },
         "programs": {
           "cava": {
-            "description": "Escreva em {filepath}",
-            "description-missing": "Requer que o {app} esteja instalado"
+            "description": "Escreva em {filepath}"
           },
           "code": {
-            "description": "Escreva em {filepath} — o tema HyprLuna precisa ser instalado e ativado manualmente",
-            "description-missing": "Nenhum cliente Code detectado — instale VSCode ou VSCodium"
+            "description": "Escreva em {filepath} — o tema HyprLuna precisa ser instalado e ativado manualmente"
           },
           "description": "Tematização específica de aplicativos.",
           "discord": {
-            "description": "Escrever {filepath} para {client} — o tema HyprLuna precisa ser instalado e ativado manualmente",
-            "description-missing": "Nenhum cliente Discord detectado — instale vencord, vesktop, webcord, armcord, equibop, lightcord ou dorion"
+            "description": "Escrever {filepath} para {client} — o tema HyprLuna precisa ser instalado e ativado manualmente"
           },
           "emacs": {
-            "description": "Doom: ~/.config/doom/themes/noctalia.el<br>Padrão: ~/.emacs.d/themes/noctalia.el<br>Aplicar manualmente: (load-theme 'noctalia t)",
-            "description-missing": "Requer que o {app} esteja instalado"
+            "description": "Doom: ~/.config/doom/themes/noctalia.el<br>Padrão: ~/.emacs.d/themes/noctalia.el<br>Aplicar manualmente: (load-theme 'noctalia t)"
           },
           "fuzzel": {
-            "description": "Escrever {filepath} e recarregar",
-            "description-missing": "Requer que o {app} esteja instalado"
+            "description": "Escrever {filepath} e recarregar"
           },
           "label": "Programas",
           "pywalfox": {
-            "description": "Escrever {filepath} e executar pywalfox update",
-            "description-missing": "Requer que o {app} esteja instalado"
+            "description": "Escrever {filepath} e executar pywalfox update"
           },
           "spicetify": {
-            "description": "Escreva em {filepath} — o tema Comfy precisa ser instalado e ativado manualmente",
-            "description-missing": "Requer que o {app} esteja instalado"
+            "description": "Escreva em {filepath} — o tema Comfy precisa ser instalado e ativado manualmente"
           },
           "telegram": {
-            "description": "Escreva em {filepath}",
-            "description-missing": "Requer que o {app} esteja instalado"
+            "description": "Escreva em {filepath}"
           },
           "vicinae": {
-            "description": "Escrever {filepath} e recarregar",
-            "description-missing": "Requer que o {app} esteja instalado"
+            "description": "Escrever {filepath} e recarregar"
           },
           "walker": {
-            "description": "Escrever {filepath} e definir tema como noctalia",
-            "description-missing": "Requer que o {app} esteja instalado"
+            "description": "Escrever {filepath} e definir tema como noctalia"
           },
           "yazi": {
-            "description": "Escreva em {filepath} — o sabor precisa ser ativado manualmente",
-            "description-missing": "Requer que o {app} esteja instalado"
+            "description": "Escreva em {filepath} — o sabor precisa ser ativado manualmente"
           },
           "zed": {
-            "description": "Escrever {filepath} e recarregar",
-            "description-missing": "Requer que o {app} esteja instalado"
+            "description": "Escrever {filepath} e recarregar"
           }
         },
         "section": {
@@ -1225,26 +1242,21 @@
         },
         "terminal": {
           "alacritty": {
-            "description": "Escreva {filepath} e recarregue",
-            "description-missing": "Requer que o {app} esteja instalado"
+            "description": "Escreva {filepath} e recarregue"
           },
           "description": "Tematização do emulador de terminal.",
           "foot": {
-            "description": "Escrever {filepath} e recarregar",
-            "description-missing": "Requer que o {app} esteja instalado"
+            "description": "Escrever {filepath} e recarregar"
           },
           "ghostty": {
-            "description": "Escrever {filepath} e recarregar",
-            "description-missing": "Requer que o {app} esteja instalado"
+            "description": "Escrever {filepath} e recarregar"
           },
           "kitty": {
-            "description": "Escrever {filepath} e recarregar",
-            "description-missing": "Requer que o {app} esteja instalado"
+            "description": "Escrever {filepath} e recarregar"
           },
           "label": "Terminal",
           "wezterm": {
-            "description": "Escreva {filepath} e recarregue",
-            "description-missing": "Requer que o {app} esteja instalado"
+            "description": "Escreva {filepath} e recarregue"
           }
         },
         "ui": {
@@ -1371,10 +1383,6 @@
           "label": "Modo minimalista"
         },
         "preview": "Pré-visualização",
-        "section": {
-          "description": "Configurar a aparência do widget de relógio.",
-          "label": "Widget de Relógio"
-        },
         "show-background": {
           "description": "Mostrar o contêiner de fundo para o widget de relógio.",
           "label": "Mostrar plano de fundo"
@@ -1440,10 +1448,6 @@
           "description": "Controla o comportamento do widget quando nenhuma mídia está sendo reproduzida.",
           "label": "Modo de ocultação"
         },
-        "section": {
-          "description": "Configurar a aparência do widget do reprodutor de mídia.",
-          "label": "Widget do Reprodutor de Mídia"
-        },
         "show-background": {
           "description": "Mostrar o contêiner de fundo para o widget do reprodutor de mídia.",
           "label": "Mostrar plano de fundo"
@@ -1467,19 +1471,9 @@
           "description": "Mostrar um widget de clima na área de trabalho.",
           "label": "Ativar widget de clima"
         },
-        "section": {
-          "description": "Configure a aparência do widget de clima.",
-          "label": "Widget do Clima"
-        },
         "show-background": {
           "description": "Mostrar o contêiner de fundo para o widget de clima.",
           "label": "Mostrar plano de fundo"
-        }
-      },
-      "widgets": {
-        "section": {
-          "description": "Adicionar e configurar widgets da área de trabalho",
-          "label": "Widgets da Área de Trabalho"
         }
       }
     },
@@ -2295,9 +2289,9 @@
       "disk-section": {
         "label": "Uso do disco"
       },
-      "enable-nvidia-gpu": {
-        "description": "Atenção: Isto irá ativar sua GPU NVIDIA, o que pode impactar significativamente a duração da bateria em laptops com gráficos híbridos.",
-        "label": "Ativar o monitoramento da GPU NVIDIA"
+      "enable-dgpu-monitoring": {
+        "description": "Atenção: Isto irá ativar sua GPU dedicada (NVIDIA/AMD), o que pode impactar significativamente a duração da bateria em laptops com gráficos híbridos.",
+        "label": "Ativar o monitoramento da GPU dedicada"
       },
       "general": {
         "section": {
@@ -2558,8 +2552,20 @@
       "low-desc": "A bateria está em {percent}%. Por favor, conecte o carregador."
     },
     "bluetooth": {
+      "confirm-code": "Confirme o código {value} no outro dispositivo.",
+      "connect-failed": "Falha ao conectar ao dispositivo",
       "disabled": "Desativado",
-      "enabled": "Ativado"
+      "disconnect-failed": "Falha ao desconectar do dispositivo",
+      "discoverable-change-failed": "Falha ao alterar o estado de visibilidade",
+      "discoverable-disabled": "Visível desativado",
+      "discoverable-enabled": "Visível ativado",
+      "display-code": "Insira o código {value} no outro dispositivo.",
+      "enabled": "Ativado",
+      "forget-failed": "Falha ao esquecer o dispositivo",
+      "pair-failed": "Falha ao emparelhar o dispositivo",
+      "passkey-required": "Senha necessária pelo dispositivo.",
+      "pincode-required": "Código PIN exigido pelo dispositivo",
+      "state-change-failed": "Falha ao alterar o estado do Bluetooth"
     },
     "clipboard": {
       "unavailable": "Histórico da área de transferência indisponível",
@@ -2642,9 +2648,13 @@
     },
     "wifi": {
       "connected": "Conectado a '{ssid}'",
+      "connection-failed": "Falha na conexão",
+      "connection-timeout": "Tempo de conexão esgotado",
       "disabled": "Desativado",
       "disconnected": "Desconectado de '{ssid}'",
-      "enabled": "Ativado"
+      "enabled": "Ativado",
+      "incorrect-password": "Senha incorreta",
+      "network-not-found": "Rede não encontrada"
     }
   },
   "tooltips": {
@@ -2668,6 +2678,7 @@
     "grid-view": "Visualização em grade",
     "hidden-files-hide": "Arquivos ocultos",
     "hidden-files-show": "Arquivos ocultos",
+    "hide-unnamed-devices": "Ocultar dispositivos sem nome",
     "home": "Diretório home",
     "input-muted": "Alternar mudo de entrada",
     "keep-awake": "Manter acordado",
@@ -2710,6 +2721,7 @@
     "search-close": "Fechar pesquisa",
     "session-menu": "Menu da Sessão",
     "set-power-profile": "{profile} perfil de energia",
+    "show-all-devices": "Mostrar todos os dispositivos",
     "start-screen-recording": "Gravador de tela",
     "stop-screen-recording": "Gravador de tela",
     "switch-to-dark-mode": "Modo escuro",
@@ -2902,17 +2914,27 @@
       "disabled": "O Wi-Fi está desativado",
       "disconnect": "Desconectar",
       "disconnecting": "Desconectando...",
+      "dns": "DNS",
       "enable-message": "Ative o Wi-Fi para ver as redes disponíveis.",
       "enter-password": "Digite a senha...",
       "forget": "Esquecer",
       "forget-network": "Esquecer esta rede?",
       "forgetting": "Esquecendo...",
+      "gateway": "Porta de entrada",
+      "info": "Informação",
+      "internet": "Internet",
+      "internet-connected": "Conectado à internet",
+      "internet-limited": "Sem internet",
+      "ipv4": "IPv4",
       "known-networks": "Redes Conhecidas",
+      "link-speed": "Velocidade de ligação",
       "no-networks": "Nenhuma rede encontrada",
       "password": "Senha",
       "saved": "Salva",
       "scan-again": "Escanear novamente",
       "searching": "Procurando redes próximas...",
+      "security": "Segurança",
+      "signal": "Sinal",
       "title": "Wi-Fi"
     }
   }

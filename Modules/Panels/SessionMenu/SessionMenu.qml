@@ -280,6 +280,54 @@ SmartPanel {
     }
   }
 
+  function getGridInfo() {
+    const columns = Math.min(3, Math.ceil(Math.sqrt(powerOptions.length)));
+    const rows = Math.ceil(powerOptions.length / columns);
+    return {
+      columns,
+      rows,
+      currentRow: Math.floor(selectedIndex / columns),
+      currentCol: selectedIndex % columns,
+      itemsInRow: row => Math.min(columns, powerOptions.length - row * columns)
+    };
+  }
+
+  // Unified navigation function
+  function navigateGrid(direction) {
+    if (powerOptions.length === 0)
+      return;
+
+    const grid = getGridInfo();
+    let newRow = grid.currentRow;
+    let newCol = grid.currentCol;
+
+    switch (direction) {
+    case "left":
+      newCol = newCol - 1 < 0 ? grid.itemsInRow(newRow) - 1 : newCol - 1;
+      break;
+    case "right":
+      newCol = newCol + 1 >= grid.itemsInRow(newRow) ? 0 : newCol + 1;
+      break;
+    case "up":
+      newRow = newRow - 1 < 0 ? grid.rows - 1 : newRow - 1;
+      break;
+    case "down":
+      newRow = newRow + 1 >= grid.rows ? 0 : newRow + 1;
+      break;
+    }
+
+    // For vertical movement, clamp column if row has fewer items
+    if (direction === "up" || direction === "down") {
+      const itemsInNewRow = grid.itemsInRow(newRow);
+      newCol = Math.min(newCol, itemsInNewRow - 1);
+    }
+
+    const newIndex = newRow * grid.columns + newCol;
+    if (newIndex < powerOptions.length) {
+      selectedIndex = newIndex;
+    }
+  }
+
   function activate() {
     if (powerOptions.length > 0 && powerOptions[selectedIndex]) {
       const option = powerOptions[selectedIndex];
@@ -305,19 +353,35 @@ SmartPanel {
   }
 
   function onLeftPressed() {
-    selectPreviousWrapped();
+    if (largeButtonsStyle) {
+      navigateGrid("left");
+    } else {
+      selectPreviousWrapped();
+    }
   }
 
   function onRightPressed() {
-    selectNextWrapped();
+    if (largeButtonsStyle) {
+      navigateGrid("right");
+    } else {
+      selectNextWrapped();
+    }
   }
 
   function onUpPressed() {
-    selectPreviousWrapped();
+    if (largeButtonsStyle) {
+      navigateGrid("up");
+    } else {
+      selectPreviousWrapped();
+    }
   }
 
   function onDownPressed() {
-    selectNextWrapped();
+    if (largeButtonsStyle) {
+      navigateGrid("down");
+    } else {
+      selectNextWrapped();
+    }
   }
 
   function onReturnPressed() {
@@ -340,6 +404,16 @@ SmartPanel {
     selectPreviousWrapped();
   }
 
+  function onNumberPressed(number) {
+    // Number is 1-based, convert to 0-based index
+    const index = number - 1;
+    if (index >= 0 && index < powerOptions.length) {
+      const option = powerOptions[index];
+      selectedIndex = index;
+      startTimer(option.action);
+    }
+  }
+
   // Countdown timer
   Timer {
     id: countdownTimer
@@ -356,10 +430,21 @@ SmartPanel {
   panelContent: Rectangle {
     id: ui
     color: Color.transparent
+    focus: true
 
     // For large buttons style, use full screen dimensions
     readonly property var contentPreferredWidth: largeButtonsStyle ? (root.screen?.width || root.width || 0) : undefined
     readonly property var contentPreferredHeight: largeButtonsStyle ? (root.screen?.height || root.height || 0) : undefined
+
+    // Focus management
+    Connections {
+      target: root
+      function onOpened() {
+        Qt.callLater(() => {
+                       ui.forceActiveFocus();
+                     });
+      }
+    }
 
     // Navigation functions
     function selectFirst() {
@@ -435,6 +520,7 @@ SmartPanel {
             title: modelData.title
             isShutdown: modelData.isShutdown || false
             isSelected: index === selectedIndex
+            number: index + 1
             onClicked: {
               selectedIndex = index;
               startTimer(modelData.action);
@@ -514,6 +600,7 @@ SmartPanel {
               title: modelData.title
               isShutdown: modelData.isShutdown || false
               isSelected: index === selectedIndex
+              number: index + 1
               onClicked: {
                 selectedIndex = index;
                 startTimer(modelData.action);
@@ -553,6 +640,7 @@ SmartPanel {
     property bool pending: false
     property bool isShutdown: false
     property bool isSelected: false
+    property int number: 0
 
     signal clicked
 
@@ -613,10 +701,10 @@ SmartPanel {
       // Text content in the middle
       ColumnLayout {
         anchors.left: iconElement.right
-        anchors.right: pendingIndicator.visible ? pendingIndicator.left : parent.right
+        anchors.right: numberIndicator.visible ? numberIndicator.left : parent.right
         anchors.verticalCenter: parent.verticalCenter
         anchors.leftMargin: Style.marginL
-        anchors.rightMargin: pendingIndicator.visible ? Style.marginM : 0
+        anchors.rightMargin: numberIndicator.visible ? Style.marginM : 0
         spacing: 0
 
         NText {
@@ -642,23 +730,36 @@ SmartPanel {
         }
       }
 
-      // Pending indicator on the right
+      // Number indicator on the right (when not pending)
       Rectangle {
-        id: pendingIndicator
+        id: numberIndicator
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
-        width: 20
-        height: 20
-        radius: Math.min(Style.radiusL, width / 2)
-        color: Color.mPrimary
-        visible: buttonRoot.pending
+        width: Style.marginM * 2
+        height: width
+        radius: Math.min(Style.radiusM, height / 2)
+        color: Qt.alpha(Color.mSurfaceVariant, 0.5)
+        border.width: Style.borderS
+        border.color: Color.mOutline
+        visible: buttonRoot.number > 0 && !buttonRoot.pending
 
         NText {
+          id: numberText
           anchors.centerIn: parent
-          text: Math.ceil(timeRemaining / 1000)
+          text: buttonRoot.number
           pointSize: Style.fontSizeS
-          font.weight: Style.fontWeightBold
-          color: Color.mOnPrimary
+          color: {
+            if (buttonRoot.isSelected || mouseArea.containsMouse)
+              return Color.mOnHover;
+            return Color.mOnSurface;
+          }
+
+          Behavior on color {
+            ColorAnimation {
+              duration: Style.animationFast
+              easing.type: Easing.OutCirc
+            }
+          }
         }
       }
     }
@@ -682,6 +783,7 @@ SmartPanel {
     property bool pending: false
     property bool isShutdown: false
     property bool isSelected: false
+    property int number: 0
 
     signal clicked
 
@@ -707,17 +809,6 @@ SmartPanel {
       origin.y: largeButtonRoot.height / 2
       xScale: hoverScale
       yScale: hoverScale
-    }
-
-    // Subtle shadow/glow effect
-    layer.enabled: isSelected || mouseArea.containsMouse || pending
-    layer.effect: MultiEffect {
-      shadowEnabled: true
-      shadowBlur: 20
-      shadowOpacity: 0.3
-      shadowColor: pending ? Color.mPrimary : (isShutdown ? Color.mError : Color.mPrimary)
-      shadowHorizontalOffset: 0
-      shadowVerticalOffset: 0
     }
 
     Behavior on color {
@@ -803,6 +894,40 @@ SmartPanel {
             return Color.mOnPrimary;
           if (largeButtonRoot.isShutdown && !largeButtonRoot.isSelected && !mouseArea.containsMouse)
             return Color.mError;
+          if (largeButtonRoot.isSelected || mouseArea.containsMouse)
+            return Color.mOnPrimary;
+          return Color.mOnSurface;
+        }
+
+        Behavior on color {
+          ColorAnimation {
+            duration: Style.animationFast
+            easing.type: Easing.OutCirc
+          }
+        }
+      }
+    }
+
+    // Number indicator in top-right corner
+    Rectangle {
+      anchors.top: parent.top
+      anchors.right: parent.right
+      anchors.margins: Style.marginM
+      width: Style.fontSizeM * 2
+      height: width
+      radius: Math.min(Style.radiusM, height / 2)
+      color: Qt.alpha(Color.mSurfaceVariant, 0.7)
+      border.width: Style.borderS
+      border.color: Color.mOutline
+      visible: largeButtonRoot.number > 0 && !largeButtonRoot.pending
+      z: 10
+
+      NText {
+        id: largeNumberText
+        anchors.centerIn: parent
+        text: largeButtonRoot.number
+        pointSize: Style.fontSizeM
+        color: {
           if (largeButtonRoot.isSelected || mouseArea.containsMouse)
             return Color.mOnPrimary;
           return Color.mOnSurface;

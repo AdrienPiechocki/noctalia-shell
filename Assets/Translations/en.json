@@ -55,6 +55,10 @@
           "description": "Choose how you'd like this value to appear.",
           "label": "Display mode"
         },
+        "hide-if-not-detected": {
+          "description": "Hide the widget when no battery is detected on the system.",
+          "label": "Hide if not detected"
+        },
         "low-battery-threshold": {
           "description": "Show a warning when battery falls below this percentage.",
           "label": "Low battery warning threshold"
@@ -449,18 +453,28 @@
   "bluetooth": {
     "panel": {
       "available-devices": "Available devices",
+      "battery": "Battery",
       "blocked": "Blocked",
       "connect": "Connect",
       "connected-devices": "Connected devices",
       "connecting": "Connecting...",
+      "device-address": "Device address",
       "disabled": "Bluetooth is disabled",
       "disconnect": "Disconnect",
+      "discoverable": "Discoverable",
       "enable-message": "Enable Bluetooth to see available devices.",
+      "info": "Info",
       "known-devices": "Known devices",
+      "pair": "Pair",
+      "paired": "Paired",
+      "paired-devices": "Paired devices",
       "pairing": "Pairing...",
       "pairing-mode": "Make sure your device is in pairing mode.",
       "scanning": "Scanning for devices...",
-      "title": "Bluetooth"
+      "signal": "Signal",
+      "title": "Bluetooth",
+      "trusted": "Trusted",
+      "unpair": "Unpair"
     }
   },
   "calendar": {
@@ -520,7 +534,9 @@
     "cancel": "Cancel",
     "check-settings": "Check Settings for details",
     "close": "Close",
-    "save": "Save"
+    "no": "No",
+    "save": "Save",
+    "yes": "Yes"
   },
   "context-menu": {
     "clear-history": "Clear history",
@@ -568,6 +584,18 @@
       "chat": "Chat",
       "development": "Development",
       "education": "Education",
+      "emoji": {
+        "activity": "Activity",
+        "animals": "Animals",
+        "flags": "Flags",
+        "food": "Food & Drink",
+        "nature": "Nature",
+        "objects": "Objects",
+        "people": "People & Body",
+        "recent": "Recent",
+        "symbols": "Symbols",
+        "travel": "Travel & Places"
+      },
       "game": "Games",
       "graphics": "Graphics",
       "misc": "Misc",
@@ -837,7 +865,7 @@
         "unavailable": "Power Profile"
       },
       "tooltip": {
-        "action": "Power profile",
+        "action": "Power Profile",
         "disabled": "Install power-profiles-daemon to use power profiles"
       }
     },
@@ -847,13 +875,13 @@
         "stopped": "Record"
       },
       "tooltip": {
-        "action": "Screen recorder"
+        "action": "Screen Recorder"
       }
     },
     "wallpaperSelector": {
       "label": "Wallpaper",
       "tooltip": {
-        "action": "Wallpaper selector"
+        "action": "Wallpaper Selector"
       }
     },
     "wifi": {
@@ -1149,14 +1177,15 @@
       "templates": {
         "compositors": {
           "description": "Compositor theming.",
+          "hyprland": {
+            "description": "Write {filepath}."
+          },
           "label": "Compositors",
           "mango": {
-            "description": "Write {filepath}. Requires mango",
-            "description-missing": "Requires {app} to be installed"
+            "description": "Write {filepath}."
           },
           "niri": {
-            "description": "Write {filepath}. Requires niri v25.11+",
-            "description-missing": "Requires {app} to be installed"
+            "description": "Write {filepath}. Requires niri v25.11+"
           }
         },
         "misc": {
@@ -1169,54 +1198,42 @@
         },
         "programs": {
           "cava": {
-            "description": "Write {filepath}",
-            "description-missing": "Requires {app} to be installed"
+            "description": "Write {filepath}"
           },
           "code": {
-            "description": "Write {filepath} — HyprLuna theme needs to be installed and activated manually",
-            "description-missing": "No Code client detected — install VSCode or VSCodium"
+            "description": "Write {filepath} — HyprLuna theme needs to be installed and activated manually"
           },
           "description": "Application-specific theming.",
           "discord": {
-            "description": "Write {filepath} for {client} — HyprLuna theme needs to be activated manually",
-            "description-missing": "No Discord client detected — install vencord, vesktop, webcord, armcord, equibop, lightcord, or dorion"
+            "description": "Write {filepath} for {client} — HyprLuna theme needs to be activated manually"
           },
           "emacs": {
-            "description": "Doom: ~/.config/doom/themes/noctalia.el<br>Standard: ~/.emacs.d/themes/noctalia.el<br>Apply manually: (load-theme 'noctalia t)",
-            "description-missing": "Requires {app} to be installed"
+            "description": "Doom: ~/.config/doom/themes/noctalia.el<br>Standard: ~/.emacs.d/themes/noctalia.el<br>Apply manually: (load-theme 'noctalia t)"
           },
           "fuzzel": {
-            "description": "Write {filepath} and reload",
-            "description-missing": "Requires {app} to be installed"
+            "description": "Write {filepath} and reload."
           },
           "label": "Programs",
           "pywalfox": {
-            "description": "Write {filepath} and run pywalfox update",
-            "description-missing": "Requires {app} to be installed"
+            "description": "Write {filepath} and run pywalfox update"
           },
           "spicetify": {
-            "description": "Write {filepath} — Comfy theme needs to be installed and activated manually",
-            "description-missing": "Requires {app} to be installed"
+            "description": "Write {filepath} — Comfy theme needs to be installed and activated manually"
           },
           "telegram": {
-            "description": "Write {filepath}",
-            "description-missing": "Requires {app} to be installed"
+            "description": "Write {filepath}"
           },
           "vicinae": {
-            "description": "Write {filepath} and reload",
-            "description-missing": "Requires {app} to be installed"
+            "description": "Write {filepath} and reload."
           },
           "walker": {
-            "description": "Write {filepath} and set theme to noctalia",
-            "description-missing": "Requires {app} to be installed"
+            "description": "Write {filepath} and set theme to noctalia"
           },
           "yazi": {
-            "description": "Write {filepath} — flavor needs to be activated manually",
-            "description-missing": "Requires {app} to be installed"
+            "description": "Write {filepath} — flavor needs to be activated manually"
           },
           "zed": {
-            "description": "Write {filepath} and reload",
-            "description-missing": "Requires {app} to be installed"
+            "description": "Write {filepath} and reload."
           }
         },
         "section": {
@@ -1225,26 +1242,21 @@
         },
         "terminal": {
           "alacritty": {
-            "description": "Write {filepath} and reload",
-            "description-missing": "Requires {app} to be installed"
+            "description": "Write {filepath} and reload."
           },
           "description": "Terminal emulator theming.",
           "foot": {
-            "description": "Write {filepath} and reload",
-            "description-missing": "Requires {app} to be installed"
+            "description": "Write {filepath} and reload."
           },
           "ghostty": {
-            "description": "Write {filepath} and reload",
-            "description-missing": "Requires {app} to be installed"
+            "description": "Write {filepath} and reload."
           },
           "kitty": {
-            "description": "Write {filepath} and reload",
-            "description-missing": "Requires {app} to be installed"
+            "description": "Write {filepath} and reload."
           },
           "label": "Terminal",
           "wezterm": {
-            "description": "Write {filepath} and reload",
-            "description-missing": "Requires {app} to be installed"
+            "description": "Write {filepath} and reload."
           }
         },
         "ui": {
@@ -1371,10 +1383,6 @@
           "label": "Minimal mode"
         },
         "preview": "Preview",
-        "section": {
-          "description": "Configure the clock widget appearance.",
-          "label": "Clock Widget"
-        },
         "show-background": {
           "description": "Show the background container for the clock widget.",
           "label": "Show background"
@@ -1428,7 +1436,7 @@
       "general": {
         "section": {
           "description": "Configure widgets that appear on your desktop.",
-          "label": "Desktop Widgets"
+          "label": "Desktop widgets"
         }
       },
       "media-player": {
@@ -1439,10 +1447,6 @@
         "hide-mode": {
           "description": "Controls how the widget behaves when no media is playing.",
           "label": "Hiding mode"
-        },
-        "section": {
-          "description": "Configure the media player widget appearance.",
-          "label": "Media Player Widget"
         },
         "show-background": {
           "description": "Show the background container for the media player widget.",
@@ -1467,19 +1471,9 @@
           "description": "Show a weather widget on the desktop.",
           "label": "Enable weather widget"
         },
-        "section": {
-          "description": "Configure the weather widget appearance.",
-          "label": "Weather Widget"
-        },
         "show-background": {
           "description": "Show the background container for the weather widget.",
           "label": "Show background"
-        }
-      },
-      "widgets": {
-        "section": {
-          "description": "Add and configure desktop widgets",
-          "label": "Desktop Widgets"
         }
       }
     },
@@ -2295,9 +2289,9 @@
       "disk-section": {
         "label": "Disk usage"
       },
-      "enable-nvidia-gpu": {
-        "description": "Warning: This will wake up your NVIDIA GPU, which may significantly impact battery life on laptops with hybrid graphics.",
-        "label": "Enable NVIDIA GPU monitoring"
+      "enable-dgpu-monitoring": {
+        "description": "Warning: This will wake up your discrete GPU (NVIDIA/AMD), which may significantly impact battery life on laptops with hybrid graphics.",
+        "label": "Enable discrete GPU monitoring"
       },
       "general": {
         "section": {
@@ -2558,8 +2552,20 @@
       "low-desc": "Battery is at {percent}%. Please connect the charger."
     },
     "bluetooth": {
+      "confirm-code": "Confirm code {value} on the other device",
+      "connect-failed": "Failed to connect to device",
       "disabled": "Disabled",
-      "enabled": "Enabled"
+      "disconnect-failed": "Failed to disconnect from device",
+      "discoverable-change-failed": "Failed to change discoverable state",
+      "discoverable-disabled": "Discoverable disabled",
+      "discoverable-enabled": "Discoverable enabled",
+      "display-code": "Enter code {value} on the other device",
+      "enabled": "Enabled",
+      "forget-failed": "Failed to forget device",
+      "pair-failed": "Failed to pair device",
+      "passkey-required": "Passkey required by the device",
+      "pincode-required": "PIN code required by the device",
+      "state-change-failed": "Failed to change Bluetooth state"
     },
     "clipboard": {
       "unavailable": "Clipboard history unavailable",
@@ -2642,9 +2648,13 @@
     },
     "wifi": {
       "connected": "Connected to '{ssid}'",
+      "connection-failed": "Connection failed",
+      "connection-timeout": "Connection timeout",
       "disabled": "Disabled",
       "disconnected": "Disconnected from '{ssid}'",
-      "enabled": "Enabled"
+      "enabled": "Enabled",
+      "incorrect-password": "Incorrect password",
+      "network-not-found": "Network not found"
     }
   },
   "tooltips": {
@@ -2668,6 +2678,7 @@
     "grid-view": "Grid view",
     "hidden-files-hide": "Hidden files",
     "hidden-files-show": "Hidden files",
+    "hide-unnamed-devices": "Hide unnamed devices",
     "home": "Home directory",
     "input-muted": "Toggle input mute",
     "keep-awake": "Keep Awake",
@@ -2710,6 +2721,7 @@
     "search-close": "Close search",
     "session-menu": "Session menu",
     "set-power-profile": "{profile} power profile",
+    "show-all-devices": "Show all devices",
     "start-screen-recording": "Screen recorder",
     "stop-screen-recording": "Screen recorder",
     "switch-to-dark-mode": "Dark Mode",
@@ -2899,21 +2911,31 @@
       "available-networks": "Available networks",
       "connect": "Connect",
       "connected": "Connected",
-      "disabled": "Wi-Fi is disabled",
+      "disabled": "Wi‑Fi is disabled",
       "disconnect": "Disconnect",
-      "disconnecting": "Disconnecting...",
-      "enable-message": "Enable Wi-Fi to see available networks.",
-      "enter-password": "Enter password...",
+      "disconnecting": "Disconnecting…",
+      "dns": "DNS",
+      "enable-message": "Enable Wi‑Fi to see available networks.",
+      "enter-password": "Enter Wi‑Fi password",
       "forget": "Forget",
-      "forget-network": "Forget this network?",
-      "forgetting": "Forgetting...",
+      "forget-network": "Forget this network",
+      "forgetting": "Forgetting…",
+      "gateway": "Gateway",
+      "info": "Info",
+      "internet": "Internet",
+      "internet-connected": "Internet connected",
+      "internet-limited": "No internet",
+      "ipv4": "IPv4",
       "known-networks": "Known networks",
-      "no-networks": "No networks found",
+      "link-speed": "Link speed",
+      "no-networks": "No Wi‑Fi networks found",
       "password": "Password",
       "saved": "Saved",
       "scan-again": "Scan again",
-      "searching": "Searching for nearby networks...",
-      "title": "Wi-Fi"
+      "searching": "Searching for networks...",
+      "security": "Security",
+      "signal": "Signal",
+      "title": "Wi‑Fi"
     }
   }
 }
