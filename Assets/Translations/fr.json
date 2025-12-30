@@ -94,6 +94,10 @@
           "label": "Barre horizontale"
         },
         "preview": "Aperçu",
+        "tooltip-format": {
+          "description": "Chaîne de format pour l'info-bulle affichée lors du survol de l'horloge. Laissez vide pour utiliser l'info-bulle par défaut.",
+          "label": "Format de l'info-bulle"
+        },
         "use-custom-font": {
           "description": "Remplacez la police par défaut par une police personnalisée pour l'horloge.",
           "label": "Utiliser une police personnalisée."
@@ -303,6 +307,10 @@
         }
       },
       "system-monitor": {
+        "compact-mode": {
+          "description": "Afficher les statistiques sous forme de mini-graphiques à barres au lieu de valeurs textuelles. Empêche les décalages de mise en page.",
+          "label": "Mode compact"
+        },
         "cpu-temperature": {
           "description": "Afficher les lectures de température du CPU si disponibles.",
           "label": "Température du CPU"
@@ -334,6 +342,10 @@
         "storage-usage": {
           "description": "Afficher les informations d'utilisation de l'espace disque.",
           "label": "Utilisation du stockage"
+        },
+        "use-monospace-font": {
+          "description": "```\nUtilisez une police de caractères à chasse fixe pour une largeur de caractère uniforme.\n```",
+          "label": "Police à chasse fixe"
         }
       },
       "taskbar": {
@@ -413,6 +425,10 @@
           "description": "Afficher les espaces de travail de l'écran actuellement ciblé, plutôt que de l'écran où se trouve la barre.",
           "label": "Suivre l'Écran Ciblé"
         },
+        "grouped-border-opacity": {
+          "description": "Définir le niveau d'opacité des bordures des conteneurs d'espace de travail.",
+          "label": "Opacité de la bordure"
+        },
         "hide-unoccupied": {
           "description": "Ne pas afficher les espaces de travail sans fenêtres.",
           "label": "Masquer les inoccupés"
@@ -428,6 +444,10 @@
         "show-labels-only-when-occupied": {
           "description": "Afficher uniquement les étiquettes d'espace de travail lorsqu'elles contiennent des fenêtres.",
           "label": "Afficher les étiquettes uniquement lorsque le champ est occupé."
+        },
+        "unfocused-icons-opacity": {
+          "description": "Définir le niveau d'opacité des icônes d'applications non focalisées.",
+          "label": "Opacité des icônes non ciblées"
         }
       }
     }
@@ -465,11 +485,13 @@
       "enable-message": "Activez le Bluetooth pour voir les appareils disponibles.",
       "info": "Infos",
       "known-devices": "Appareils connus",
+      "no-devices": "Aucun appareil disponible",
       "pair": "Appairer",
       "paired": "Appairé",
       "paired-devices": "Appareils appairés",
       "pairing": "Appairage en cours...",
       "pairing-mode": "Assurez-vous que votre appareil est en mode d'appairage.",
+      "refresh-devices": "Actualiser les appareils",
       "scanning": "Recherche d'appareils en cours...",
       "signal": "Signal",
       "title": "Bluetooth",
@@ -526,7 +548,7 @@
     }
   },
   "clock": {
-    "tooltip": "Horloge"
+    "tooltip": "Calendrier"
   },
   "common": {
     "add": "Ajouter",
@@ -551,6 +573,7 @@
     "enable-bluetooth": "Activer le Bluetooth",
     "enable-dnd": "Activer le mode Ne pas déranger",
     "enable-wifi": "Activer le Wi-Fi",
+    "lower-to-bottom": "Abaisser au plus bas / Descendre au plus bas",
     "next": "Suivant",
     "open-calendar": "Ouvrir le calendrier",
     "open-display-settings": "Paramètres d'affichage",
@@ -560,7 +583,9 @@
     "pause": "Pause",
     "play": "Jouer",
     "previous": "Précédent",
+    "raise-to-top": "Remonter en haut",
     "random-wallpaper": "Fond d'écran aléatoire",
+    "reset": "Réinitialiser",
     "toggle-mute": "Activer/désactiver le mode muet",
     "widget-settings": "Paramètres du widget"
   },
@@ -749,7 +774,7 @@
       "never": "Ne Jamais Défiler"
     },
     "settings-panel-mode": {
-      "attached": "Panneau fixé à une barre",
+      "attached": "Panneau attaché à la barre",
       "centered": "Panneau centré",
       "window": "Fenêtre séparée"
     },
@@ -1025,6 +1050,10 @@
     },
     "bar": {
       "appearance": {
+        "background-opacity": {
+          "description": "Définir l'opacité de l'arrière-plan spécifiquement pour la barre.",
+          "label": "Opacité de l'arrière-plan de la barre"
+        },
         "capsule-opacity": {
           "description": "Définir le niveau d'opacité des arrière-plans des widgets quand la capsule est affichée.",
           "label": "Opacité de la capsule"
@@ -1063,9 +1092,9 @@
           "description": "Affiche une bordure visible autour de chaque widget.",
           "label": "Afficher les contours des widgets"
         },
-        "transparent": {
-          "description": "Cela empêchera les panneaux de se fixer à la barre.",
-          "label": "Fond transparent"
+        "use-separate-opacity": {
+          "description": "Activer l'utilisation d'une valeur d'opacité distincte pour l'arrière-plan de la barre.",
+          "label": "Utiliser l'opacité des barres séparément"
         }
       },
       "monitors": {
@@ -1178,14 +1207,14 @@
         "compositors": {
           "description": "Thématisation du compositeur.",
           "hyprland": {
-            "description": "Écris {filepath}."
+            "description": "Écrire {filepath}"
           },
           "label": "Compositeurs",
           "mango": {
-            "description": "Écrire {filepath}. Requiert mango"
+            "description": "Écrire {filepath} — requiert Mango"
           },
           "niri": {
-            "description": "Écrire {filepath}. Requiert niri v25.11+"
+            "description": "Écrire {filepath} — requiert Niri v25.11+"
           }
         },
         "misc": {
@@ -1201,14 +1230,18 @@
             "description": "Écrire {filepath}"
           },
           "code": {
-            "description": "Écrire {filepath} — le thème HyprLuna doit être installé et activé manuellement"
+            "description": "Écrire {filepath}",
+            "description-detected": "Appliqué au profil par défaut — détecté : {clients}",
+            "description-missing": "Aucun éditeur de code détecté (VSCode ou VSCodium)"
           },
           "description": "Thématisation spécifique aux applications.",
           "discord": {
-            "description": "Écrire {filepath} pour {client} — le thème HyprLuna doit être installé et activé manuellement"
+            "description": "Écrire {filepath} pour {client} — le thème doit être activé manuellement",
+            "description-detected": "Détecté : {clients}",
+            "description-missing": "Aucun client Discord détecté"
           },
           "emacs": {
-            "description": "Doom: ~/.config/doom/themes/noctalia.el<br>Standard: ~/.emacs.d/themes/noctalia.el<br>Appliquer manuellement: (load-theme 'noctalia t)"
+            "description": "Doom: ~/.config/doom/themes/noctalia.el<br>Standard: ~/.emacs.d/themes/noctalia.el"
           },
           "fuzzel": {
             "description": "Écrire {filepath} et recharger"
@@ -1230,7 +1263,7 @@
             "description": "Écrire {filepath} et définir le thème sur noctalia"
           },
           "yazi": {
-            "description": "Écrire dans {filepath} — flavor doit être activée manuellement"
+            "description": "Écrire {filepath} — flavor doit être activée manuellement"
           },
           "zed": {
             "description": "Écrire {filepath} — le thème Comfy doit être installé et activé manuellement"
@@ -1256,7 +1289,7 @@
           },
           "label": "Terminal",
           "wezterm": {
-            "description": "Écrire {filepath} et recharger."
+            "description": "Écrire {filepath} et recharger"
           }
         },
         "ui": {
@@ -1352,6 +1385,10 @@
         "sectionLeft": "Gauche",
         "sectionRight": "Droite"
       },
+      "system-monitor-disk-path": {
+        "description": "Sélectionnez le point de montage du disque que la carte du moniteur système dans le centre de contrôle doit surveiller.",
+        "label": "Chemin du disque du moniteur système"
+      },
       "title": "Centre de contrôle"
     },
     "desktop-widgets": {
@@ -1383,6 +1420,10 @@
           "label": "Mode minimaliste"
         },
         "preview": "Aperçu",
+        "rounded-corners": {
+          "description": "Utiliser des coins arrondis pour l'arrière-plan du widget.",
+          "label": "Coins arrondis."
+        },
         "show-background": {
           "description": "Afficher le conteneur d'arrière-plan pour le widget d'horloge.",
           "label": "Afficher l'arrière-plan"
@@ -1397,6 +1438,7 @@
         },
         "style": {
           "analog": "Analogique",
+          "binary": "Binaire",
           "description": "Choisissez le style d'affichage de l'horloge.",
           "digital": "Numérique",
           "label": "Style d'horloge",
@@ -1448,6 +1490,14 @@
           "description": "Contrôle le comportement du widget lorsqu'aucun média n'est en cours de lecture.",
           "label": "Mode de masquage"
         },
+        "rounded-corners": {
+          "description": "Activer les coins arrondis sur les bords du widget.",
+          "label": "Coins arrondis"
+        },
+        "show-album-art": {
+          "description": "Afficher la pochette de l'album et les informations sur les pistes (titre et artiste).",
+          "label": "Afficher la pochette et le titre de l'album"
+        },
         "show-background": {
           "description": "Afficher le conteneur d'arrière-plan pour le widget lecteur multimédia.",
           "label": "Afficher l'arrière-plan"
@@ -1456,13 +1506,13 @@
           "description": "Afficher les boutons de contrôle multimédia (lecture/pause, précédent, suivant) sur le widget lecteur multimédia.",
           "label": "Afficher les boutons"
         },
+        "show-visualizer": {
+          "description": "Afficher la superposition de l'visualiseur audio.",
+          "label": "Afficher le visualiseur"
+        },
         "visualizer-type": {
           "description": "Choisissez un type de visualisation pour l'arrière-plan du lecteur multimédia de bureau.",
           "label": "Type de visualisation"
-        },
-        "visualizer-visibility": {
-          "description": "Contrôler quand le visualiseur audio est visible.",
-          "label": "Visibilité du visualiseur audio"
         }
       },
       "title": "Widgets de bureau",
@@ -1920,6 +1970,24 @@
           "label": "Durée des notifications"
         }
       },
+      "history": {
+        "critical-urgency": {
+          "description": "Enregistrer les notifications de priorité critique dans l'historique.",
+          "label": "Enregistrer l'urgence critique dans l'historique"
+        },
+        "low-urgency": {
+          "description": "Enregistrer les notifications de priorité faible dans l'historique.",
+          "label": "Enregistrer l'urgence faible dans l'historique"
+        },
+        "normal-urgency": {
+          "description": "Enregistrer les notifications de priorité normale dans l'historique.",
+          "label": "Enregistrer l'urgence normale dans l'historique"
+        },
+        "section": {
+          "description": "Contrôler quelles notifications sont enregistrées dans l'historique en fonction de leur niveau d'urgence.",
+          "label": "Historique"
+        }
+      },
       "monitors": {
         "section": {
           "description": "Afficher les notifications sur des moniteurs spécifiques. Par défaut, sur tous si aucun n'est choisi.",
@@ -2181,6 +2249,10 @@
         }
       },
       "general": {
+        "copy-to-clipboard": {
+          "description": "Copier le fichier dans le presse-papiers une fois l'enregistrement terminé.",
+          "label": "Copier dans le presse-papiers"
+        },
         "output-folder": {
           "description": "Dossier où les enregistrements d'écran seront sauvegardés.",
           "label": "Dossier de sortie",
@@ -2274,6 +2346,10 @@
         "description": "Afficher le titre et le bouton de fermeture en haut du Menu de session.",
         "label": "Afficher l'en-tête"
       },
+      "show-number-labels": {
+        "description": "Afficher les numéros (1-2-3-4...) sur les boutons et activer les raccourcis clavier numériques pour une sélection rapide.",
+        "label": "Afficher les numéros"
+      },
       "title": "Menu de session"
     },
     "system-monitor": {
@@ -2285,6 +2361,10 @@
       },
       "custom-highlight-colors-title": {
         "label": "Couleurs de surbrillance personnalisées"
+      },
+      "disk-path": {
+        "description": "Sélectionnez le point de montage du disque à surveiller.",
+        "label": "Chemin du disque"
       },
       "disk-section": {
         "label": "Utilisation disque"
@@ -2390,7 +2470,7 @@
       },
       "settings-panel-mode": {
         "description": "Choisir la disposition des paramètres (peut nécessiter une réouverture).",
-        "label": "Mode du panneau de configuration"
+        "label": "Mode du panneau des paramètres"
       },
       "shadows": {
         "description": "Active les ombres portées sous les barres et les panneaux.",
@@ -2408,6 +2488,12 @@
     },
     "wallpaper": {
       "automation": {
+        "change-mode": {
+          "alphabetical": "Alphabétique",
+          "description": "Choisissez comment les fonds d'écran sont sélectionnés lors du changement automatique.",
+          "label": "Mode de changement",
+          "random": "Aléatoire"
+        },
         "custom-interval": {
           "description": "Entrez l'heure au format HH:MM (ex: 01:30).",
           "label": "Intervalle personnalisé"
@@ -2419,6 +2505,10 @@
         "random-wallpaper": {
           "description": "Planifiez des changements de fond d'écran aléatoires à intervalles réguliers.",
           "label": "Fond d'écran aléatoire"
+        },
+        "scheduled-change": {
+          "description": "Changer automatiquement les fonds d'écran à intervalles réguliers.",
+          "label": "Changement programmé"
         },
         "section": {
           "label": "Automatisation"
@@ -2540,6 +2630,18 @@
     "user-requested": "Demandé par l'utilisateur",
     "welcome-back": "Bon retour,",
     "widget-settings-title": "Paramètres de {widget}"
+  },
+  "system-monitor": {
+    "cpu-temp": "Température du processeur",
+    "cpu-usage": "Utilisation du processeur",
+    "disk": "Disque",
+    "download": "Télécharger",
+    "download-speed": "Vitesse de téléchargement",
+    "gpu-temp": "Température du GPU",
+    "memory": "Mémoire",
+    "title": "Moniteur système",
+    "upload": "Télécharger",
+    "upload-speed": "Vitesse de chargement"
   },
   "toast": {
     "airplane-mode": {
@@ -2743,6 +2845,11 @@
     "no-match": "Aucun résultat trouvé.",
     "no-wallpaper": "Aucun fond d'écran trouvé.",
     "panel": {
+      "apikey": {
+        "help": "Une clé API est requise pour accéder au contenu NSFW.",
+        "label": "Clé API",
+        "placeholder": "Entrez votre clé API Wallhaven"
+      },
       "apply-all-monitors": {
         "description": "Appliquer le fond d'écran sélectionné à tous les moniteurs en même temps.",
         "label": "Appliquer à tous les moniteurs"
@@ -2761,6 +2868,7 @@
       "purity": {
         "all": "Tout",
         "label": "Filtre de contenu",
+        "nsfw": "NSFW se traduit généralement par :\n\n*   **NSFW** (l'acronyme lui-même est souvent utilisé)\n*   **Contenu explicite**\n*   **Contenu réservé aux adultes**\n*   **Déconseillé au travail** (plus littéral)",
         "sfw": "SFW",
         "sketchy": "Sketchy"
       },
@@ -2908,6 +3016,7 @@
   },
   "wifi": {
     "panel": {
+      "action-required": "Action requise",
       "available-networks": "Réseaux disponibles",
       "connect": "Connecter",
       "connected": "Connecté",
@@ -2920,6 +3029,7 @@
       "forget": "Oublier",
       "forget-network": "Oublier ce réseau ?",
       "forgetting": "Oubli en cours...",
+      "frequency": "Fréquence",
       "gateway": "Passerelle",
       "info": "Info",
       "internet": "Internet",
@@ -2934,8 +3044,15 @@
       "scan-again": "Analyser à nouveau",
       "searching": "Recherche de réseaux à proximité en cours...",
       "security": "Sécurité",
-      "signal": "Signal",
       "title": "Wi-Fi"
+    },
+    "signal": {
+      "excellent": "Excellent",
+      "fair": "Fair",
+      "good": "Good",
+      "poor": "Poor",
+      "very-good": "Very Good",
+      "weak": "Weak"
     }
   }
 }
