@@ -223,7 +223,6 @@ Item {
     }
     function muteInput() {
       AudioService.setInputMuted(!AudioService.inputMuted);
-      ToastService.showNotice("Microphone Muted: ", AudioService.inputMuted)
     }
   }
 
@@ -492,6 +491,19 @@ Item {
     }
     function edit() {
       DesktopWidgetRegistry.editMode = !DesktopWidgetRegistry.editMode;
+    }
+  }
+
+  IpcHandler {
+    target: "toast"
+    function notice(message: string, description: string) {
+      ToastService.showNotice(message, description, "", "notice", 3000)
+    }
+    function warning(message: string, description: string) {
+      ToastService.showWarning(message, description, "", "warning", 4000)
+    }
+    function error(message: string, description: string) {
+      ToastService.showError(message, description, "", "error", 6000)
     }
   }
 }
