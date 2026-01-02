@@ -224,6 +224,10 @@
         "display-mode": {
           "description": "Wybierz sposób wyświetlania tej wartości.",
           "label": "Tryb wyświetlania"
+        },
+        "show-icon": {
+          "description": "Wyświetl ikonę układu klawiatury.",
+          "label": "Pokaż ikonę"
         }
       },
       "lock-keys": {
@@ -326,6 +330,10 @@
         "gpu-temperature": {
           "description": "Pokaż odczyty temperatury GPU (jeśli dostępne).",
           "label": "Temperatura GPU"
+        },
+        "load-average": {
+          "description": "Wyświetl średnie obciążenie systemu.",
+          "label": "Średnie obciążenie"
         },
         "memory-percentage": {
           "description": "Pokaż użycie pamięci w procentach zamiast wartości bezwzględnych.",
@@ -672,7 +680,8 @@
         "comfortable": "Komfortowy",
         "compact": "Kompaktowy",
         "default": "Domyślny",
-        "mini": "Mini"
+        "mini": "Mini",
+        "spacious": "Przestronny"
       },
       "position": {
         "bottom": "Dół",
@@ -729,7 +738,7 @@
         "center": "Środek",
         "center_left": "Środek lewo",
         "center_right": "Środek prawo",
-        "follow_bar": "Podążaj za paskiem (domyślne)",
+        "follow_bar": "Podążaj za paskiem",
         "top_center": "Góra środek",
         "top_left": "Góra lewo",
         "top_right": "Góra prawo"
@@ -751,6 +760,7 @@
       "audio-sources": {
         "both": "Wyjście systemowe + mikrofon",
         "microphone-input": "Wejście mikrofonu",
+        "none": "Brak dźwięku.",
         "system-output": "Wyjście systemowe"
       },
       "color-range": {
@@ -772,6 +782,10 @@
       "always": "Zawsze przewijaj",
       "hover": "Przewijaj po najechaniu",
       "never": "Nigdy nie przewijaj"
+    },
+    "session-menu-grid-layout": {
+      "grid": "Siatka",
+      "single-row": "Pojedynczy wiersz"
     },
     "settings-panel-mode": {
       "attached": "Panel przypięty do paska",
@@ -825,6 +839,7 @@
   "plugins": {
     "applications": "Aplikacje",
     "calculator": "Kalkulator",
+    "calculator-deprecated": "Polecenie >calc jest przestarzałe i wkrótce zostanie usunięte. Zamiast tego wpisuj wyrażenia matematyczne bezpośrednio w wyszukiwarce.",
     "calculator-description": "Kalkulator — obliczaj wyrażenia matematyczne",
     "calculator-enter-expression": "Wpisz wyrażenie matematyczne",
     "calculator-error": "Błąd",
@@ -1809,6 +1824,10 @@
           "description": "Używaj natywnych ikon systemowych zamiast ikon Tabler.",
           "label": "Używaj natywnych ikon."
         },
+        "ignore-mouse-input": {
+          "description": "Wyłącz interakcję myszy i kółko przewijania w launcherze.",
+          "label": "Ignoruj dane wejściowe myszy."
+        },
         "position": {
           "description": "Wybierz, gdzie pojawia się panel launchera.",
           "label": "Pozycja"
@@ -2166,6 +2185,11 @@
         "no-plugins-description": "Sprawdź źródła wtyczek lub odśwież listę.",
         "no-plugins-label": "Brak dostępnych wtyczek"
       },
+      "collision": {
+        "already-installed": "Ta wtyczka jest już zainstalowana.",
+        "custom-version-exists": "Niestandardowa wersja z \"{source}\" jest już zainstalowana.",
+        "official-version-exists": "Oficjalna wersja tej wtyczki jest już zainstalowana."
+      },
       "filter": {
         "all": "Wszystkie",
         "downloaded": "Pobrane",
@@ -2186,6 +2210,7 @@
         "no-plugins-label": "Brak zainstalowanych wtyczek"
       },
       "installing": "Instalowanie {plugin}...",
+      "open-plugins-tab": "Otwórz ustawienia wtyczek",
       "plugin-settings-title": "Ustawienia {plugin}",
       "refresh": {
         "refreshing": "Odświeżanie listy wtyczek...",
@@ -2196,6 +2221,10 @@
       },
       "settings-error-not-loaded": "Wtyczka nie została załadowana",
       "settings-saved": "Ustawienia wtyczki zapisane",
+      "source": {
+        "custom": "Źródło niestandardowe",
+        "official": "Oficjalny"
+      },
       "sources": {
         "add-custom": "Dodaj własne repozytorium",
         "add-dialog": {
@@ -2227,6 +2256,7 @@
       "update-all": "Aktualizuj wszystkie ({count})",
       "update-all-success": "Wszystkie wtyczki zaktualizowane pomyślnie",
       "update-available": "Dostępne aktualizacje dla {count} wtyczek",
+      "update-available_plural": "Dostępne aktualizacje wtyczek: {count}",
       "update-error": "Błąd aktualizacji wtyczki {plugin}: {error}",
       "update-incompatible": "Wymaga Noctalia v{version} lub nowszej",
       "update-success": "Zaktualizowano {plugin} do v{version}",
@@ -2334,6 +2364,10 @@
           "label": "Ogólne"
         }
       },
+      "large-buttons-layout": {
+        "description": "Wybierz sposób wyświetlania przycisków menu sesji.",
+        "label": "Układ z dużymi przyciskami"
+      },
       "large-buttons-style": {
         "description": "Wyświetlaj menu sesji z dużymi przyciskami w układzie siatki.",
         "label": "Styl dużych przycisków"
@@ -2373,6 +2407,11 @@
         "description": "Ostrzeżenie: To obudzi twoją dedykowaną kartę graficzną (NVIDIA/AMD), co może znacząco wpłynąć na żywotność baterii w laptopach z hybrydową grafiką.",
         "label": "Włącz monitorowanie dedykowanej karty graficznej."
       },
+      "external-monitor": {
+        "description": "Wprowadź polecenie lub ścieżkę aplikacji do uruchomienia przy aktywacji zewnętrznej aplikacji monitora systemu.",
+        "label": "Polecenie zewnętrznego monitora systemu",
+        "placeholder": "resources || missioncenter || jdsystemmonitor || corestats || system-monitoring-center || gnome-system-monitor || plasma-systemmonitor || mate-system-monitor || ukui-system-monitor || deepin-system-monitor || pantheon-system-monitor"
+      },
       "general": {
         "section": {
           "description": "Konfiguruj zachowanie i wygląd monitora systemu.",
@@ -2384,6 +2423,9 @@
       },
       "highlight-colors-section": {
         "label": "Kolory podświetlenia"
+      },
+      "load-average-section": {
+        "label": "Średnie obciążenie"
       },
       "memory-section": {
         "label": "Użycie pamięci"
@@ -2638,6 +2680,7 @@
     "download": "Pobierz",
     "download-speed": "Prędkość pobierania",
     "gpu-temp": "Temperatura GPU",
+    "load-average": "Średnie obciążenie",
     "memory": "Pamięć",
     "title": "Monitor systemu",
     "upload": "Prześlij",
@@ -2696,7 +2739,8 @@
       "enabled": "Włączone"
     },
     "keyboard-layout": {
-      "changed": "Układ klawiatury zmieniony na {layout}"
+      "changed": "Układ klawiatury zmieniony na {layout}",
+      "title": "Klawiatura"
     },
     "kofi": {
       "opened": "Strona Ko-fi otwarta w przeglądarce"
@@ -2885,6 +2929,9 @@
         }
       },
       "search": "Szukaj",
+      "solid-color": {
+        "tooltip": "Jednolite tło kolorystyczne."
+      },
       "sorting": {
         "date_added": "Data dodania",
         "favorites": "Ulubione",

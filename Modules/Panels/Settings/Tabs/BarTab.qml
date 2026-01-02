@@ -78,6 +78,10 @@ ColumnLayout {
       {
         "key": "comfortable",
         "name": I18n.tr("options.bar.density.comfortable")
+      },
+      {
+        "key": "spacious",
+        "name": I18n.tr("options.bar.density.spacious")
       }
     ]
     currentKey: Settings.data.bar.density
@@ -501,6 +505,14 @@ ColumnLayout {
   Connections {
     target: BarService
     function onActiveWidgetsChanged() {
+      updateAvailableWidgetsModel();
+    }
+  }
+
+  // Update available widgets when plugin widgets are registered/unregistered
+  Connections {
+    target: BarWidgetRegistry
+    function onPluginWidgetRegistryUpdated() {
       updateAvailableWidgetsModel();
     }
   }

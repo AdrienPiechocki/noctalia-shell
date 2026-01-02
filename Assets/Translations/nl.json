@@ -224,6 +224,10 @@
         "display-mode": {
           "description": "Kies hoe je wilt dat deze waarde wordt weergegeven.",
           "label": "Weergavemodus"
+        },
+        "show-icon": {
+          "description": "Toon het toetsenbordindeling-icoon.",
+          "label": "Icoon weergeven"
         }
       },
       "lock-keys": {
@@ -326,6 +330,10 @@
         "gpu-temperature": {
           "description": "Toon GPU-temperatuurmetingen indien beschikbaar.",
           "label": "GPU-temperatuur"
+        },
+        "load-average": {
+          "description": "Systeembelasting gemiddelde weergeven.",
+          "label": "Gemiddelde belasting"
         },
         "memory-percentage": {
           "description": "Toon geheugengebruik als percentage in plaats van absolute waarden.",
@@ -672,7 +680,8 @@
         "comfortable": "Comfortabel",
         "compact": "Compact",
         "default": "Standaard",
-        "mini": "Mini"
+        "mini": "Mini",
+        "spacious": "Ruim"
       },
       "position": {
         "bottom": "Onder",
@@ -729,7 +738,7 @@
         "center": "Midden",
         "center_left": "Midden links",
         "center_right": "Midden rechts",
-        "follow_bar": "Balk volgen (standaard)",
+        "follow_bar": "Balk volgen",
         "top_center": "Middenboven",
         "top_left": "Linksboven",
         "top_right": "Rechtsboven"
@@ -751,6 +760,7 @@
       "audio-sources": {
         "both": "Systeemuitvoer + microfooninvoer",
         "microphone-input": "Microfooninvoer",
+        "none": "Geen audio",
         "system-output": "Systeemuitvoer"
       },
       "color-range": {
@@ -772,6 +782,10 @@
       "always": "Altijd scrollen",
       "hover": "Scrollen bij hover",
       "never": "Nooit scrollen"
+    },
+    "session-menu-grid-layout": {
+      "grid": "Raster",
+      "single-row": "Enkele rij"
     },
     "settings-panel-mode": {
       "attached": "Paneel bevestigd aan de balk",
@@ -825,6 +839,7 @@
   "plugins": {
     "applications": "Applicaties",
     "calculator": "Rekenmachine",
+    "calculator-deprecated": "De >calc opdracht is verouderd en zal binnenkort verwijderd worden. Typ wiskundige uitdrukkingen in plaats daarvan direct in de zoekopdracht.",
     "calculator-description": "Rekenmachine — bereken wiskundige expressies",
     "calculator-enter-expression": "Voer een wiskundige expressie in",
     "calculator-error": "Fout",
@@ -1809,6 +1824,10 @@
           "description": "Gebruik native systeemiconen in plaats van Tabler-iconen.",
           "label": "Gebruik native iconen"
         },
+        "ignore-mouse-input": {
+          "description": "Schakel muisinteractie en scrollwiel uit in de launcher.",
+          "label": "Negeer muisinvoer"
+        },
         "position": {
           "description": "Kies waar het launcher-paneel verschijnt.",
           "label": "Positie"
@@ -2166,6 +2185,11 @@
         "no-plugins-description": "Controleer je plugin-bronnen of vernieuw de lijst.",
         "no-plugins-label": "Geen plug-ins beschikbaar"
       },
+      "collision": {
+        "already-installed": "Deze plugin is al geïnstalleerd.",
+        "custom-version-exists": "Er is al een aangepaste versie van \"{source}\" geïnstalleerd.",
+        "official-version-exists": "De officiële versie van deze plugin is al geïnstalleerd."
+      },
       "filter": {
         "all": "Alles",
         "downloaded": "Gedownload",
@@ -2186,6 +2210,7 @@
         "no-plugins-label": "Geen plugins geïnstalleerd"
       },
       "installing": "{plugin} installeren...",
+      "open-plugins-tab": "Open plugininstellingen",
       "plugin-settings-title": "{plugin} Instellingen",
       "refresh": {
         "refreshing": "Pluginlijst vernieuwen...",
@@ -2196,6 +2221,10 @@
       },
       "settings-error-not-loaded": "Plugin niet geladen",
       "settings-saved": "Plugininstellingen opgeslagen",
+      "source": {
+        "custom": "Aangepaste bron",
+        "official": "Officieel"
+      },
       "sources": {
         "add-custom": "Aangepaste repository toevoegen",
         "add-dialog": {
@@ -2227,6 +2256,7 @@
       "update-all": "Alles bijwerken ({count})",
       "update-all-success": "Alle plugins succesvol bijgewerkt",
       "update-available": "{count} plugin(s) update(s) beschikbaar",
+      "update-available_plural": "{count} plugin updates beschikbaar",
       "update-error": "Plugin bijwerken mislukt: {plugin}: {error}",
       "update-incompatible": "Vereist Noctalia v{version} of hoger",
       "update-success": "{plugin} is bijgewerkt naar v{version}",
@@ -2334,6 +2364,10 @@
           "label": "Algemeen"
         }
       },
+      "large-buttons-layout": {
+        "description": "Kies hoe sessiemenuknoppen worden weergegeven.",
+        "label": "Lay-out met grote knoppen"
+      },
       "large-buttons-style": {
         "description": "Toon het sessiemenu met grote knoppen in een rasterindeling.",
         "label": "Stijl met grote knoppen"
@@ -2373,6 +2407,11 @@
         "description": "Waarschuwing: Dit zal uw dedicated GPU (NVIDIA/AMD) activeren, wat een aanzienlijke impact kan hebben op de batterijduur van laptops met hybride grafische kaarten.",
         "label": "Dedicated GPU-monitoring inschakelen"
       },
+      "external-monitor": {
+        "description": "Voer de opdracht of applicatiepad in om te starten bij het activeren van de externe systeemmonitor applicatie.",
+        "label": "Externe systeemmonitor opdracht",
+        "placeholder": "resources || missioncenter || jdsystemmonitor || corestats || system-monitoring-center || gnome-system-monitor || plasma-systemmonitor || mate-system-monitor || ukui-system-monitor || deepin-system-monitor || pantheon-system-monitor"
+      },
       "general": {
         "section": {
           "description": "Configureer het gedrag en de weergave van de Systeemmonitor.",
@@ -2384,6 +2423,9 @@
       },
       "highlight-colors-section": {
         "label": "Markeerkleuren"
+      },
+      "load-average-section": {
+        "label": "Gemiddelde belasting"
       },
       "memory-section": {
         "label": "Geheugengebruik"
@@ -2638,6 +2680,7 @@
     "download": "Downloaden",
     "download-speed": "Downloadsnelheid",
     "gpu-temp": "GPU-temperatuur",
+    "load-average": "Gemiddelde belasting",
     "memory": "Geheugen",
     "title": "Systeemmonitor",
     "upload": "Uploaden",
@@ -2696,7 +2739,8 @@
       "enabled": "\"Wakker houden\" ingeschakeld"
     },
     "keyboard-layout": {
-      "changed": "Toetsenbordindeling gewijzigd naar {layout}"
+      "changed": "Toetsenbordindeling gewijzigd naar {layout}",
+      "title": "Toetsenbord"
     },
     "kofi": {
       "opened": "Ko-fi-pagina geopend in je browser"
@@ -2885,6 +2929,9 @@
         }
       },
       "search": "Zoeken:",
+      "solid-color": {
+        "tooltip": "Effen kleur achtergrond"
+      },
       "sorting": {
         "date_added": "Datum toegevoegd",
         "favorites": "Favorieten",

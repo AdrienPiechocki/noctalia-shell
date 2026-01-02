@@ -224,6 +224,10 @@
         "display-mode": {
           "description": "Escolha como você gostaria que este valor aparecesse.",
           "label": "Modo de exibição"
+        },
+        "show-icon": {
+          "description": "Exibir o ícone do layout do teclado.",
+          "label": "Mostrar ícone"
         }
       },
       "lock-keys": {
@@ -326,6 +330,10 @@
         "gpu-temperature": {
           "description": "Mostrar as leituras de temperatura da GPU, se disponíveis.",
           "label": "Temperatura da GPU"
+        },
+        "load-average": {
+          "description": "Exibir média de carga do sistema.",
+          "label": "Média de carga"
         },
         "memory-percentage": {
           "description": "Mostrar o uso de memória como percentual em vez de valores absolutos.",
@@ -672,7 +680,8 @@
         "comfortable": "Confortável",
         "compact": "Compacta",
         "default": "Padrão",
-        "mini": "Mini"
+        "mini": "Mini",
+        "spacious": "Espaçoso(a)"
       },
       "position": {
         "bottom": "Inferior",
@@ -726,10 +735,10 @@
         "bottom_center": "Centro inferior",
         "bottom_left": "Inferior esquerdo",
         "bottom_right": "Inferior direito",
-        "center": "Centro (padrão)",
+        "center": "Centro",
         "center_left": "Centro à esquerda",
         "center_right": "Centro à direita",
-        "follow_bar": "Seguir barra (padrão)",
+        "follow_bar": "Seguir barra",
         "top_center": "Centro superior",
         "top_left": "Superior esquerdo",
         "top_right": "Superior direito"
@@ -751,6 +760,7 @@
       "audio-sources": {
         "both": "Saída do sistema + entrada do microfone",
         "microphone-input": "Entrada do microfone",
+        "none": "No audio",
         "system-output": "Saída do sistema"
       },
       "color-range": {
@@ -772,6 +782,10 @@
       "always": "Rolar Sempre",
       "hover": "Rolar ao Passar o Mouse",
       "never": "Nunca Rolar"
+    },
+    "session-menu-grid-layout": {
+      "grid": "Grade",
+      "single-row": "Linha Única"
     },
     "settings-panel-mode": {
       "attached": "Painel anexado à barra",
@@ -825,6 +839,7 @@
   "plugins": {
     "applications": "Aplicativos",
     "calculator": "Calculadora",
+    "calculator-deprecated": "O comando >calc está obsoleto e será removido em breve. Por favor, digite expressões matemáticas diretamente na pesquisa.",
     "calculator-description": "Calculadora — avalie expressões matemáticas",
     "calculator-enter-expression": "Digite uma expressão matemática",
     "calculator-error": "Erro",
@@ -1809,6 +1824,10 @@
           "description": "Use ícones nativos do sistema em vez de ícones Tabler.",
           "label": "Usar ícones nativos"
         },
+        "ignore-mouse-input": {
+          "description": "Desativar a interação do mouse e a roda de rolagem no iniciador.",
+          "label": "Ignorar entrada do mouse."
+        },
         "position": {
           "description": "Escolha onde o painel do lançador aparece.",
           "label": "Posição"
@@ -2166,6 +2185,11 @@
         "no-plugins-description": "Verifique as fontes do seu plugin ou atualize a lista.",
         "no-plugins-label": "Nenhum plugin disponível."
       },
+      "collision": {
+        "already-installed": "Este plugin já está instalado.",
+        "custom-version-exists": "Uma versão personalizada de \"{source}\" já está instalada.",
+        "official-version-exists": "A versão oficial deste plugin já está instalada."
+      },
       "filter": {
         "all": "Tudo",
         "downloaded": "Baixado",
@@ -2186,6 +2210,7 @@
         "no-plugins-label": "Nenhum plugin instalado"
       },
       "installing": "Instalando {plugin}...",
+      "open-plugins-tab": "Abrir configurações de plugins",
       "plugin-settings-title": "Configurações do {plugin}",
       "refresh": {
         "refreshing": "Atualizando a lista de plugins...",
@@ -2196,6 +2221,10 @@
       },
       "settings-error-not-loaded": "Plugin não carregado",
       "settings-saved": "Configurações do plugin salvas.",
+      "source": {
+        "custom": "Fonte personalizada",
+        "official": "Oficial"
+      },
       "sources": {
         "add-custom": "Adicionar repositório personalizado",
         "add-dialog": {
@@ -2227,6 +2256,7 @@
       "update-all": "Atualizar Tudo ({count})",
       "update-all-success": "Todos os plugins foram atualizados com sucesso.",
       "update-available": "{count} atualização(ões) de plugin disponível(eis)",
+      "update-available_plural": "{count} atualizações de plugin disponíveis",
       "update-error": "Falha ao atualizar o plugin: {plugin}: {error}",
       "update-incompatible": "Requer Noctalia v{version} ou superior",
       "update-success": "{plugin} atualizado para a versão {version}",
@@ -2334,6 +2364,10 @@
           "label": "Geral"
         }
       },
+      "large-buttons-layout": {
+        "description": "Escolha como os botões do menu de sessão são exibidos.",
+        "label": "Layout de botões grandes"
+      },
       "large-buttons-style": {
         "description": "Exibir o menu de sessão com botões grandes em um layout de grade.",
         "label": "Estilo de botões grandes"
@@ -2373,6 +2407,11 @@
         "description": "Atenção: Isto irá ativar sua GPU dedicada (NVIDIA/AMD), o que pode impactar significativamente a duração da bateria em laptops com gráficos híbridos.",
         "label": "Ativar o monitoramento da GPU dedicada"
       },
+      "external-monitor": {
+        "description": "Digite o comando ou caminho da aplicação para executar ao ativar a aplicação externa de monitoramento do sistema.",
+        "label": "Comando do monitor do sistema externo",
+        "placeholder": "resources || missioncenter || jdsystemmonitor || corestats || system-monitoring-center || gnome-system-monitor || plasma-systemmonitor || mate-system-monitor || ukui-system-monitor || deepin-system-monitor || pantheon-system-monitor"
+      },
       "general": {
         "section": {
           "description": "Configure o comportamento e a aparência do Monitor do Sistema.",
@@ -2384,6 +2423,9 @@
       },
       "highlight-colors-section": {
         "label": "Cores de destaque"
+      },
+      "load-average-section": {
+        "label": "Média de carga"
       },
       "memory-section": {
         "label": "Uso de memória"
@@ -2638,6 +2680,7 @@
     "download": "Baixar",
     "download-speed": "Velocidade de Download",
     "gpu-temp": "Temperatura da GPU",
+    "load-average": "Média de carga",
     "memory": "Memória",
     "title": "Monitor do Sistema",
     "upload": "Enviar",
@@ -2696,7 +2739,8 @@
       "enabled": "Ativado"
     },
     "keyboard-layout": {
-      "changed": "Layout de teclado alterado para {layout}"
+      "changed": "Layout de teclado alterado para {layout}",
+      "title": "Teclado"
     },
     "kofi": {
       "opened": "Página do Ko-fi aberta no seu navegador"
@@ -2885,6 +2929,9 @@
         }
       },
       "search": "Pesquisar:",
+      "solid-color": {
+        "tooltip": "Fundo de cor sólida"
+      },
       "sorting": {
         "date_added": "Data de adição",
         "favorites": "Favoritos",

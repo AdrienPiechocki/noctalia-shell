@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Io
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Modules.Panels.Settings
@@ -34,6 +35,7 @@ Rectangle {
   readonly property string barPosition: Settings.data.bar.position
   readonly property bool isVertical: barPosition === "left" || barPosition === "right"
   readonly property bool density: Settings.data.bar.density
+  readonly property bool barCompact: Settings.data.bar.density === "compact"
 
   readonly property bool compactMode: widgetSettings.compactMode !== undefined ? widgetSettings.compactMode : widgetMetadata.compactMode
   readonly property bool usePrimaryColor: widgetSettings.usePrimaryColor !== undefined ? widgetSettings.usePrimaryColor : widgetMetadata.usePrimaryColor
@@ -45,18 +47,16 @@ Rectangle {
   readonly property bool showMemoryAsPercent: (widgetSettings.showMemoryAsPercent !== undefined) ? widgetSettings.showMemoryAsPercent : widgetMetadata.showMemoryAsPercent
   readonly property bool showNetworkStats: (widgetSettings.showNetworkStats !== undefined) ? widgetSettings.showNetworkStats : widgetMetadata.showNetworkStats
   readonly property bool showDiskUsage: (widgetSettings.showDiskUsage !== undefined) ? widgetSettings.showDiskUsage : widgetMetadata.showDiskUsage
+  readonly property bool showLoadAverage: (widgetSettings.showLoadAverage !== undefined) ? widgetSettings.showLoadAverage : widgetMetadata.showLoadAverage
   readonly property string diskPath: (widgetSettings.diskPath !== undefined) ? widgetSettings.diskPath : widgetMetadata.diskPath
-
   readonly property string fontFamily: useMonospaceFont ? Settings.data.ui.fontFixed : Settings.data.ui.fontDefault
-  readonly property real iconSize: compactMode ? textSize * 1.2 : textSize * 1.4
-  readonly property real textSize: {
-    var base = isVertical ? width * 0.82 : height;
-    return Math.max(1, (density === "compact") ? base * 0.43 : base * 0.33);
-  }
 
-  // Mini bar dimensions for compact mode
-  readonly property real miniBarWidth: Math.max(16, Math.round(iconSize * 1.8))
-  readonly property real miniBarHeight: Math.max(3, Math.round(iconSize * 0.25))
+  readonly property real iconSize: Style.toOdd(Style.capsuleHeight * Style.barScaling * (root.barCompact ? 0.55 : 0.45))
+  readonly property real miniGaugeWidth: Math.max(3, Style.toOdd(root.iconSize * 0.25))
+
+  function openExternalMonitor() {
+    Quickshell.execDetached(["sh", "-c", Settings.data.systemMonitor.externalMonitor]);
+  }
 
   // Build comprehensive tooltip text with all stats
   function buildTooltipText() {
@@ -71,6 +71,11 @@ Rectangle {
     // GPU (if available)
     if (SystemStatService.gpuAvailable) {
       lines.push(`${I18n.tr("system-monitor.gpu-temp")}: ${Math.round(SystemStatService.gpuTemp)}°C`);
+    }
+
+    // Load Average
+    if (SystemStatService.loadAvg1 >= 0) {
+      lines.push(`${I18n.tr("system-monitor.load-average")}: ${SystemStatService.loadAvg1.toFixed(2)} ${SystemStatService.loadAvg5.toFixed(2)} ${SystemStatService.loadAvg15.toFixed(2)}`);
     }
 
     // Memory
@@ -90,10 +95,6 @@ Rectangle {
 
     return lines.join("\n");
   }
-
-  // Match Workspace widget pill sizing: base ratio depends on bar density
-  readonly property real pillBaseRatio: (density === "compact") ? 0.85 : 0.65
-  readonly property int pillHeight: Math.round(Style.capsuleHeight * pillBaseRatio)
 
   readonly property color textColor: usePrimaryColor ? Color.mPrimary : Color.mOnSurface
 
@@ -143,18 +144,22 @@ Rectangle {
   MouseArea {
     id: tooltipArea
     anchors.fill: parent
-    acceptedButtons: Qt.LeftButton | Qt.RightButton
+    acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
     hoverEnabled: true
     onClicked: mouse => {
                  if (mouse.button === Qt.LeftButton) {
                    PanelService.getPanel("systemStatsPanel", screen)?.toggle(root);
                    TooltipService.hide();
                  } else if (mouse.button === Qt.RightButton) {
+                   TooltipService.hide();
                    var popupMenuWindow = PanelService.getPopupMenuWindow(screen);
                    if (popupMenuWindow) {
                      popupMenuWindow.showContextMenu(contextMenu);
                      contextMenu.openAtItem(root, screen);
                    }
+                 } else if (mouse.button === Qt.MiddleButton) {
+                   TooltipService.hide();
+                   openExternalMonitor();
                  }
                }
     onEntered: {
@@ -187,7 +192,7 @@ Rectangle {
       property real ratio: 0 // 0..1
       property color statColor: Color.mPrimary // Color based on warning/critical state
 
-      width: miniBarHeight // Thin vertical gauge
+      width: miniGaugeWidth
       height: iconSize
       radius: width / 2
       color: Color.mOutline
@@ -276,9 +281,8 @@ Rectangle {
             }
           }
           family: fontFamily
-          pointSize: textSize
+          pointSize: Style.barFontSize
           applyUiScale: false
-          font.weight: Style.fontWeightMedium
           Layout.alignment: Qt.AlignCenter
           horizontalAlignment: Text.AlignHCenter
           verticalAlignment: Text.AlignVCenter
@@ -346,9 +350,8 @@ Rectangle {
           visible: !compactMode
           text: `${Math.round(SystemStatService.cpuTemp)}°`
           family: fontFamily
-          pointSize: textSize
+          pointSize: Style.barFontSize
           applyUiScale: false
-          font.weight: Style.fontWeightMedium
           Layout.alignment: Qt.AlignCenter
           horizontalAlignment: Text.AlignHCenter
           verticalAlignment: Text.AlignVCenter
@@ -416,9 +419,8 @@ Rectangle {
           visible: !compactMode
           text: `${Math.round(SystemStatService.gpuTemp)}°`
           family: fontFamily
-          pointSize: textSize
+          pointSize: Style.barFontSize
           applyUiScale: false
-          font.weight: Style.fontWeightMedium
           Layout.alignment: Qt.AlignCenter
           horizontalAlignment: Text.AlignHCenter
           verticalAlignment: Text.AlignVCenter
@@ -440,6 +442,75 @@ Rectangle {
           onLoaded: {
             item.ratio = Qt.binding(() => SystemStatService.gpuTemp / 100);
             item.statColor = Qt.binding(() => SystemStatService.gpuColor);
+          }
+        }
+      }
+    }
+
+    // Load Average Component
+    Item {
+      id: loadAvgContainer
+      implicitWidth: loadAvgContent.implicitWidth
+      implicitHeight: loadAvgContent.implicitHeight
+      Layout.preferredWidth: isVertical ? root.width : implicitWidth
+      Layout.preferredHeight: compactMode ? implicitHeight : Style.capsuleHeight
+      Layout.alignment: isVertical ? Qt.AlignHCenter : Qt.AlignVCenter
+      visible: showLoadAverage && SystemStatService.nproc > 0 && SystemStatService.loadAvg1 > 0
+
+      GridLayout {
+        id: loadAvgContent
+        anchors.centerIn: parent
+        flow: (isVertical && !compactMode) ? GridLayout.TopToBottom : GridLayout.LeftToRight
+        rows: (isVertical && !compactMode) ? 2 : 1
+        columns: (isVertical && !compactMode) ? 1 : 2
+        rowSpacing: Style.marginXXS
+        columnSpacing: compactMode ? 3 : Style.marginXS
+
+        Item {
+          Layout.alignment: Qt.AlignCenter
+          Layout.row: (isVertical && !compactMode) ? 1 : 0
+          Layout.column: 0
+          Layout.fillWidth: isVertical
+          implicitWidth: iconSize
+          implicitHeight: iconSize
+
+          NIcon {
+            icon: "weight"
+            pointSize: iconSize
+            applyUiScale: false
+            anchors.centerIn: parent
+            color: Color.mOnSurface
+          }
+        }
+
+        // Text mode
+        NText {
+          visible: !compactMode
+          text: SystemStatService.loadAvg1.toFixed(1)
+          family: fontFamily
+          pointSize: Style.barFontSize
+          applyUiScale: false
+          Layout.alignment: Qt.AlignCenter
+          horizontalAlignment: Text.AlignHCenter
+          verticalAlignment: Text.AlignVCenter
+          color: textColor
+          Layout.row: isVertical ? 0 : 0
+          Layout.column: isVertical ? 0 : 1
+          scale: isVertical ? Math.min(1.0, root.width / implicitWidth) : 1.0
+        }
+
+        // Compact mode
+        Loader {
+          active: compactMode
+          visible: compactMode
+          sourceComponent: miniGaugeComponent
+          Layout.alignment: Qt.AlignCenter
+          Layout.row: 0
+          Layout.column: 1
+
+          onLoaded: {
+            item.ratio = Qt.binding(() => Math.min(1, SystemStatService.loadAvg1 / SystemStatService.nproc));
+            item.statColor = Qt.binding(() => Color.mPrimary);
           }
         }
       }
@@ -486,9 +557,8 @@ Rectangle {
           visible: !compactMode
           text: showMemoryAsPercent ? `${Math.round(SystemStatService.memPercent)}%` : SystemStatService.formatMemoryGb(SystemStatService.memGb)
           family: fontFamily
-          pointSize: textSize
+          pointSize: Style.barFontSize
           applyUiScale: false
-          font.weight: Style.fontWeightMedium
           Layout.alignment: Qt.AlignCenter
           horizontalAlignment: Text.AlignHCenter
           verticalAlignment: Text.AlignVCenter
@@ -554,9 +624,8 @@ Rectangle {
           visible: !compactMode
           text: isVertical ? SystemStatService.formatCompactSpeed(SystemStatService.rxSpeed) : SystemStatService.formatSpeed(SystemStatService.rxSpeed)
           family: fontFamily
-          pointSize: textSize
+          pointSize: Style.barFontSize
           applyUiScale: false
-          font.weight: Style.fontWeightMedium
           Layout.alignment: Qt.AlignCenter
           horizontalAlignment: Text.AlignHCenter
           verticalAlignment: Text.AlignVCenter
@@ -621,9 +690,8 @@ Rectangle {
           visible: !compactMode
           text: isVertical ? SystemStatService.formatCompactSpeed(SystemStatService.txSpeed) : SystemStatService.formatSpeed(SystemStatService.txSpeed)
           family: fontFamily
-          pointSize: textSize
+          pointSize: Style.barFontSize
           applyUiScale: false
-          font.weight: Style.fontWeightMedium
           Layout.alignment: Qt.AlignCenter
           horizontalAlignment: Text.AlignHCenter
           verticalAlignment: Text.AlignVCenter
@@ -690,9 +758,8 @@ Rectangle {
           visible: !compactMode
           text: SystemStatService.diskPercents[diskPath] ? `${SystemStatService.diskPercents[diskPath]}%` : "n/a"
           family: fontFamily
-          pointSize: textSize
+          pointSize: Style.barFontSize
           applyUiScale: false
-          font.weight: Style.fontWeightMedium
           Layout.alignment: Qt.AlignCenter
           horizontalAlignment: Text.AlignHCenter
           verticalAlignment: Text.AlignVCenter
