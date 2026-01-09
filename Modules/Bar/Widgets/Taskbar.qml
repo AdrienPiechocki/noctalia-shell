@@ -22,7 +22,6 @@ Rectangle {
 
   readonly property string barPosition: Settings.data.bar.position
   readonly property bool isVerticalBar: barPosition === "left" || barPosition === "right"
-  readonly property string density: Settings.data.bar.density
 
   property var widgetMetadata: BarWidgetRegistry.widgetMetadata[widgetId]
   property var widgetSettings: {
@@ -43,14 +42,14 @@ Rectangle {
   readonly property bool smartWidth: (widgetSettings.smartWidth !== undefined) ? widgetSettings.smartWidth : widgetMetadata.smartWidth
   readonly property int maxTaskbarWidthPercent: (widgetSettings.maxTaskbarWidth !== undefined) ? widgetSettings.maxTaskbarWidth : widgetMetadata.maxTaskbarWidth
   readonly property real iconScale: (widgetSettings.iconScale !== undefined) ? widgetSettings.iconScale : widgetMetadata.iconScale
-  readonly property int itemSize: Style.toOdd(Style.capsuleHeight * Style.barScaling * Math.max(0.1, iconScale))
+  readonly property int itemSize: Style.toOdd(Style.capsuleHeight * Math.max(0.1, iconScale))
 
   // Maximum width for the taskbar widget to prevent overlapping with other widgets
   readonly property real maxTaskbarWidth: {
     if (!screen || isVerticalBar || !smartWidth || maxTaskbarWidthPercent <= 0)
       return 0;
     var barFloating = Settings.data.bar.floating || false;
-    var barMarginH = barFloating ? Math.ceil(Settings.data.bar.marginHorizontal * Style.marginXL) : 0;
+    var barMarginH = barFloating ? Math.ceil(Settings.data.bar.marginHorizontal) : 0;
     var availableWidth = screen.width - (barMarginH * 2);
     return Math.round(availableWidth * (maxTaskbarWidthPercent / 100));
   }
@@ -322,7 +321,7 @@ Rectangle {
       if (root.selectedWindowId) {
         // Focus item (for running apps)
         items.push({
-                     "label": I18n.tr("dock.menu.focus"),
+                     "label": I18n.tr("common.focus"),
                      "action": "focus",
                      "icon": "eye"
                    });
@@ -330,14 +329,14 @@ Rectangle {
         // Pin/Unpin item (always available when right-clicking an app)
         const isPinned = root.isAppPinned(root.selectedAppId);
         items.push({
-                     "label": !isPinned ? I18n.tr("dock.menu.pin") : I18n.tr("dock.menu.unpin"),
+                     "label": !isPinned ? I18n.tr("common.pin") : I18n.tr("common.unpin"),
                      "action": "pin",
                      "icon": !isPinned ? "pin" : "unpin"
                    });
 
         // Close item (for running apps)
         items.push({
-                     "label": I18n.tr("dock.menu.close"),
+                     "label": I18n.tr("common.close"),
                      "action": "close",
                      "icon": "x"
                    });
@@ -358,7 +357,7 @@ Rectangle {
         }
       }
       items.push({
-                   "label": I18n.tr("context-menu.widget-settings"),
+                   "label": I18n.tr("actions.widget-settings"),
                    "action": "widget-settings",
                    "icon": "settings"
                  });
@@ -615,7 +614,7 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: Style.toOdd(root.itemSize * 0.25)
                 height: 4
-                color: taskbarItem.isFocused ? Color.mPrimary : Color.transparent
+                color: taskbarItem.isFocused ? Color.mPrimary : "transparent"
                 radius: Math.min(Style.radiusXXS, width / 2)
               }
             }
@@ -690,7 +689,7 @@ Rectangle {
     if (root.selectedWindowId) {
       // Focus item (for running apps)
       items.push({
-                   "label": I18n.tr("dock.menu.focus"),
+                   "label": I18n.tr("common.focus"),
                    "action": "focus",
                    "icon": "eye"
                  });
@@ -698,14 +697,14 @@ Rectangle {
       // Pin/Unpin item
       const isPinned = root.isAppPinned(root.selectedAppId);
       items.push({
-                   "label": !isPinned ? I18n.tr("dock.menu.pin") : I18n.tr("dock.menu.unpin"),
+                   "label": !isPinned ? I18n.tr("common.pin") : I18n.tr("common.unpin"),
                    "action": "pin",
                    "icon": !isPinned ? "pin" : "unpin"
                  });
 
       // Close item
       items.push({
-                   "label": I18n.tr("dock.menu.close"),
+                   "label": I18n.tr("common.close"),
                    "action": "close",
                    "icon": "x"
                  });
@@ -726,7 +725,7 @@ Rectangle {
       }
     }
     items.push({
-                 "label": I18n.tr("context-menu.widget-settings"),
+                 "label": I18n.tr("actions.widget-settings"),
                  "action": "widget-settings",
                  "icon": "settings"
                });

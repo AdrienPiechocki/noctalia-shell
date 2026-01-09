@@ -14,19 +14,18 @@ NIconButton {
 
   property ShellScreen screen
 
-  density: Settings.data.bar.density
   baseSize: Style.capsuleHeight
   applyUiScale: false
   customRadius: Style.radiusL
   colorBg: PowerProfileService.noctaliaPerformanceMode ? Color.mPrimary : Style.capsuleColor
   colorFg: PowerProfileService.noctaliaPerformanceMode ? Color.mOnPrimary : Color.mOnSurface
-  colorBorder: Color.transparent
-  colorBorderHover: Color.transparent
+  colorBorder: "transparent"
+  colorBorderHover: "transparent"
   border.color: Style.capsuleBorderColor
   border.width: Style.capsuleBorderWidth
 
   icon: PowerProfileService.noctaliaPerformanceMode ? "rocket" : "rocket-off"
-  tooltipText: PowerProfileService.noctaliaPerformanceMode ? I18n.tr("tooltips.noctalia-performance-enabled") : I18n.tr("tooltips.noctalia-performance-disabled")
+  tooltipText: PowerProfileService.noctaliaPerformanceMode ? I18n.tr("tooltips.noctalia-performance-enabled") : I18n.tr("tooltips.noctalia-performance-enabled")
   tooltipDirection: BarService.getTooltipDirection()
   onClicked: PowerProfileService.toggleNoctaliaPerformance()
 }

@@ -91,8 +91,8 @@ Item {
   readonly property string barPosition: Settings.data.bar.position
   readonly property bool barIsVertical: barPosition === "left" || barPosition === "right"
   readonly property bool barFloating: Settings.data.bar.floating
-  readonly property real barMarginH: barFloating ? Math.ceil(Settings.data.bar.marginHorizontal * Style.marginXL) : 0
-  readonly property real barMarginV: barFloating ? Math.ceil(Settings.data.bar.marginVertical * Style.marginXL) : 0
+  readonly property real barMarginH: barFloating ? Math.ceil(Settings.data.bar.marginHorizontal) : 0
+  readonly property real barMarginV: barFloating ? Math.ceil(Settings.data.bar.marginVertical) : 0
   readonly property real attachmentOverlap: 1 // Panel extends 1px into bar area to fix hairline gap with fractional scaling
 
   // Check if bar should be visible on this screen
@@ -146,6 +146,9 @@ Item {
   }
 
   function open(buttonItem, buttonName) {
+    // Reset immediate close flag to ensure animations work properly
+    PanelService.closedImmediately = false;
+
     if (!buttonItem && buttonName) {
       buttonItem = BarService.lookupWidget(buttonName, screen.name);
     }
@@ -204,6 +207,9 @@ Item {
   }
 
   function close() {
+    // Reset immediate close flag to ensure animations work properly
+    PanelService.closedImmediately = false;
+
     // Start close sequence: fade opacity first
     isClosing = true;
     sizeAnimationComplete = false;
@@ -228,6 +234,31 @@ Item {
 
     // Opacity will fade out, then size will shrink, then finalizeClose() will complete
     Logger.d("SmartPanel", "Closing panel", objectName);
+  }
+
+  function closeImmediately() {
+    // Close without any animation, useful for app launches to avoid focus issues
+    opacityTrigger.stop();
+    openWatchdogActive = false;
+    openWatchdogTimer.stop();
+    closeWatchdogActive = false;
+    closeWatchdogTimer.stop();
+
+    // Don't set opacity directly as it breaks the binding
+    root.isPanelVisible = false;
+    root.sizeAnimationComplete = false;
+    root.isClosing = false;
+    root.opacityFadeComplete = false;
+    root.closeFinalized = true;
+    root.isPanelOpen = false;
+    panelBackground.dimensionsInitialized = false;
+
+    // Signal immediate close so MainScreen can skip dimmer animation
+    PanelService.closedImmediately = true;
+    PanelService.closedPanel(root);
+    closed();
+
+    Logger.d("SmartPanel", "Panel closed immediately", objectName);
   }
 
   function finalizeClose() {
@@ -656,6 +687,7 @@ Item {
   }
 
   Behavior on opacity {
+    enabled: !PanelService.closedImmediately
     NumberAnimation {
       id: opacityAnimation
       duration: root.isClosing ? Style.animationFaster : Style.animationFast
@@ -1047,6 +1079,7 @@ Item {
       }
 
       Behavior on width {
+        enabled: !PanelService.closedImmediately
         NumberAnimation {
           id: widthAnimation
           // Use 0ms if dimensions not initialized to prevent initial changes from animating
@@ -1076,6 +1109,7 @@ Item {
       }
 
       Behavior on height {
+        enabled: !PanelService.closedImmediately
         NumberAnimation {
           id: heightAnimation
           // Use 0ms if dimensions not initialized to prevent initial changes from animating

@@ -33,6 +33,7 @@ Item {
 
   readonly property bool isBarVertical: Settings.data.bar.position === "left" || Settings.data.bar.position === "right"
   readonly property string displayMode: (widgetSettings.displayMode !== undefined) ? widgetSettings.displayMode : widgetMetadata.displayMode
+  readonly property string middleClickCommand: (widgetSettings.middleClickCommand !== undefined) ? widgetSettings.middleClickCommand : widgetMetadata.middleClickCommand
 
   // Used to avoid opening the pill on Quickshell startup
   property bool firstVolumeReceived: false
@@ -58,10 +59,6 @@ Item {
     }
   }
 
-  function openExternalMixer() {
-    Quickshell.execDetached(["sh", "-c", Settings.data.audio.externalMixer]);
-  }
-
   Timer {
     id: externalHideTimer
     running: false
@@ -76,17 +73,17 @@ Item {
 
     model: [
       {
-        "label": I18n.tr("context-menu.toggle-mute"),
+        "label": I18n.tr("actions.toggle-mute"),
         "action": "toggle-mute",
         "icon": AudioService.muted ? "volume-off" : "volume"
       },
       {
-        "label": I18n.tr("context-menu.open-mixer"),
-        "action": "open-mixer",
+        "label": I18n.tr("actions.run-custom-command"),
+        "action": "custom-command",
         "icon": "adjustments"
       },
       {
-        "label": I18n.tr("context-menu.widget-settings"),
+        "label": I18n.tr("actions.widget-settings"),
         "action": "widget-settings",
         "icon": "settings"
       },
@@ -101,8 +98,8 @@ Item {
 
                    if (action === "toggle-mute") {
                      AudioService.setOutputMuted(!AudioService.muted);
-                   } else if (action === "open-mixer") {
-                     root.openExternalMixer();
+                   } else if (action === "custom-command") {
+                     Quickshell.execDetached(["sh", "-lc", middleClickCommand]);
                    } else if (action === "widget-settings") {
                      BarService.openWidgetSettings(screen, section, sectionWidgetIndex, widgetId, widgetSettings);
                    }
@@ -113,7 +110,6 @@ Item {
     id: pill
 
     screen: root.screen
-    density: Settings.data.bar.density
     oppositeDirection: BarService.getPillDirection(root)
     icon: AudioService.getOutputIcon()
     autoHide: false // Important to be false so we can hover as long as we want
@@ -157,6 +153,8 @@ Item {
         contextMenu.openAtItem(pill, screen);
       }
     }
-    onMiddleClicked: root.openExternalMixer()
+    onMiddleClicked: {
+      Quickshell.execDetached(["sh", "-lc", middleClickCommand]);
+    }
   }
 }

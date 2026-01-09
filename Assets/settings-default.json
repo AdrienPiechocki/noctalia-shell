@@ -10,20 +10,17 @@
     "backgroundOpacity": 0.93,
     "useSeparateOpacity": false,
     "floating": false,
-    "marginVertical": 0.25,
-    "marginHorizontal": 0.25,
+    "marginVertical": 4,
+    "marginHorizontal": 4,
     "outerCorners": true,
     "exclusive": true,
     "widgets": {
       "left": [
         {
-          "icon": "rocket",
-          "id": "CustomButton",
-          "leftClickExec": "qs -c noctalia-shell ipc call launcher toggle"
+          "id": "Launcher"
         },
         {
-          "id": "Clock",
-          "usePrimaryColor": false
+          "id": "Clock"
         },
         {
           "id": "SystemMonitor"
@@ -41,9 +38,6 @@
         }
       ],
       "right": [
-        {
-          "id": "ScreenRecorder"
-        },
         {
           "id": "Tray"
         },
@@ -86,7 +80,8 @@
     "shadowOffsetX": 2,
     "shadowOffsetY": 3,
     "language": "",
-    "allowPanelsOnScreenWithoutBar": true
+    "allowPanelsOnScreenWithoutBar": true,
+    "showChangelogOnStartup": true
   },
   "ui": {
     "fontDefault": "",
@@ -99,7 +94,9 @@
     "settingsPanelMode": "attached",
     "wifiDetailsViewMode": "grid",
     "bluetoothDetailsViewMode": "grid",
-    "bluetoothHideUnnamedDevices": false
+    "networkPanelView": "wifi",
+    "bluetoothHideUnnamedDevices": false,
+    "boxBorderEnabled": false
   },
   "location": {
     "name": "Tokyo",
@@ -111,7 +108,9 @@
     "showCalendarEvents": true,
     "showCalendarWeather": true,
     "analogClockInCalendar": false,
-    "firstDayOfWeek": -1
+    "firstDayOfWeek": -1,
+    "hideWeatherTimezone": false,
+    "hideWeatherCityName": false
   },
   "calendar": {
     "cards": [
@@ -125,25 +124,9 @@
       },
       {
         "enabled": true,
-        "id": "timer-card"
-      },
-      {
-        "enabled": true,
         "id": "weather-card"
       }
     ]
-  },
-  "screenRecorder": {
-    "directory": "",
-    "frameRate": 60,
-    "audioCodec": "opus",
-    "videoCodec": "h264",
-    "quality": "very_high",
-    "colorRange": "limited",
-    "showCursor": true,
-    "copyToClipboard": false,
-    "audioSource": "default_output",
-    "videoSource": "portal"
   },
   "wallpaper": {
     "enabled": true,
@@ -155,6 +138,8 @@
     "setWallpaperOnAllMonitors": true,
     "fillMode": "crop",
     "fillColor": "#000000",
+    "useSolidColor": false,
+    "solidColor": "#1a1a2e",
     "randomEnabled": false,
     "wallpaperChangeMode": "random",
     "randomIntervalSec": 300,
@@ -177,9 +162,11 @@
   },
   "appLauncher": {
     "enableClipboardHistory": false,
+    "autoPasteClipboard": false,
     "enableClipPreview": true,
+    "clipboardWrapText": true,
     "position": "center",
-    "pinnedExecs": [],
+    "pinnedApps": [],
     "useApp2Unit": false,
     "sortByMostUsed": true,
     "terminalCommand": "xterm -e",
@@ -188,20 +175,20 @@
     "viewMode": "list",
     "showCategories": true,
     "iconMode": "tabler",
-    "ignoreMouseInput": false
+    "showIconBackground": false,
+    "ignoreMouseInput": false,
+    "screenshotAnnotationTool": ""
   },
   "controlCenter": {
     "position": "close_to_bar_button",
+    "diskPath": "/",
     "shortcuts": {
       "left": [
         {
-          "id": "WiFi"
+          "id": "Network"
         },
         {
           "id": "Bluetooth"
-        },
-        {
-          "id": "ScreenRecorder"
         },
         {
           "id": "WallpaperSelector"
@@ -271,7 +258,6 @@
     "useCustomColors": false,
     "warningColor": "",
     "criticalColor": "",
-    "diskPath": "/",
     "externalMonitor": "resources || missioncenter || jdsystemmonitor || corestats || system-monitoring-center || gnome-system-monitor || plasma-systemmonitor || mate-system-monitor || ukui-system-monitor || deepin-system-monitor || pantheon-system-monitor"
   },
   "dock": {
@@ -290,7 +276,12 @@
     "animationSpeed": 1
   },
   "network": {
-    "wifiEnabled": true
+    "wifiEnabled": true,
+    "bluetoothRssiPollingEnabled": false,
+    "bluetoothRssiPollIntervalMs": 10000,
+    "wifiDetailsViewMode": "grid",
+    "bluetoothDetailsViewMode": "grid",
+    "bluetoothHideUnnamedDevices": false
   },
   "sessionMenu": {
     "enableCountdown": true,
@@ -362,8 +353,7 @@
     "enabledTypes": [
       0,
       1,
-      2,
-      4
+      2
     ],
     "monitors": []
   },
@@ -373,8 +363,7 @@
     "cavaFrameRate": 30,
     "visualizerType": "linear",
     "mprisBlacklist": [],
-    "preferredPlayer": "",
-    "externalMixer": "pwvucontrol || pavucontrol"
+    "preferredPlayer": ""
   },
   "brightness": {
     "brightnessStep": 5,
@@ -388,8 +377,7 @@
     "schedulingMode": "off",
     "manualSunrise": "06:30",
     "manualSunset": "18:30",
-    "matugenSchemeType": "scheme-fruit-salad",
-    "generateTemplatesForPredefined": true
+    "matugenSchemeType": "scheme-fruit-salad"
   },
   "templates": {
     "gtk": false,
@@ -416,6 +404,7 @@
     "mango": false,
     "zed": false,
     "helix": false,
+    "zenBrowser": false,
     "enableUserTemplates": false
   },
   "nightLight": {

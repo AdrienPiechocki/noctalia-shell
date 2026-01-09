@@ -130,6 +130,48 @@ Item {
     return " ".repeat(currentMaxTextLength);
   }
 
+  readonly property bool enableColorization: widgetSettings.enableColorization || false
+  readonly property string colorizeSystemIcon: {
+    if (widgetSettings.colorizeSystemIcon !== undefined)
+      return widgetSettings.colorizeSystemIcon;
+    return widgetMetadata.colorizeSystemIcon !== undefined ? widgetMetadata.colorizeSystemIcon : "none";
+  }
+
+  readonly property bool isColorizing: enableColorization && colorizeSystemIcon !== "none"
+
+  readonly property color iconColor: {
+    if (!isColorizing)
+      return Color.mOnSurface;
+    switch (colorizeSystemIcon) {
+    case "primary":
+      return Color.mPrimary;
+    case "secondary":
+      return Color.mSecondary;
+    case "tertiary":
+      return Color.mTertiary;
+    case "error":
+      return Color.mError;
+    default:
+      return Color.mOnSurface;
+    }
+  }
+  readonly property color iconHoverColor: {
+    if (!isColorizing)
+      return Color.mOnHover;
+    switch (colorizeSystemIcon) {
+    case "primary":
+      return Qt.darker(Color.mPrimary, 1.2);
+    case "secondary":
+      return Qt.darker(Color.mSecondary, 1.2);
+    case "tertiary":
+      return Qt.darker(Color.mTertiary, 1.2);
+    case "error":
+      return Qt.darker(Color.mError, 1.2);
+    default:
+      return Color.mOnHover;
+    }
+  }
+
   implicitWidth: pill.width
   implicitHeight: pill.height
 
@@ -142,10 +184,10 @@ Item {
     oppositeDirection: BarService.getPillDirection(root)
     icon: _pillIcon
     text: _pillText
-    density: Settings.data.bar.density
     rotateText: isVerticalBar && currentMaxTextLength > 0
     autoHide: false
     forceOpen: _pillForceOpen
+    customTextIconColor: isColorizing ? iconColor : "transparent"
 
     tooltipText: {
       var tooltipLines = [];
@@ -413,7 +455,7 @@ Item {
 
   function onClicked() {
     if (leftClickExec) {
-      Quickshell.execDetached(["sh", "-c", leftClickExec]);
+      Quickshell.execDetached(["sh", "-lc", leftClickExec]);
       Logger.i("CustomButton", `Executing command: ${leftClickExec}`);
     } else if (!leftClickUpdateText) {
       // No left click script was defined, open settings
@@ -428,7 +470,7 @@ Item {
 
   function onRightClicked() {
     if (rightClickExec) {
-      Quickshell.execDetached(["sh", "-c", rightClickExec]);
+      Quickshell.execDetached(["sh", "-lc", rightClickExec]);
       Logger.i("CustomButton", `Executing command: ${rightClickExec}`);
     }
     if (!textStream && rightClickUpdateText) {
@@ -438,7 +480,7 @@ Item {
 
   function onMiddleClicked() {
     if (middleClickExec) {
-      Quickshell.execDetached(["sh", "-c", middleClickExec]);
+      Quickshell.execDetached(["sh", "-lc", middleClickExec]);
       Logger.i("CustomButton", `Executing command: ${middleClickExec}`);
     }
     if (!textStream && middleClickUpdateText) {
@@ -509,7 +551,7 @@ Item {
         }
       });
 
-      Quickshell.execDetached(["sh", "-c", command]);
+      Quickshell.execDetached(["sh", "-lc", command]);
       Logger.i("CustomButton", `Executing command: ${command}`);
     } else if (wheelMode === "separate") {
       if ((delta > 0 && wheelUpExec) || (delta < 0 && wheelDownExec)) {
@@ -550,7 +592,7 @@ Item {
           }
         });
 
-        Quickshell.execDetached(["sh", "-c", command]);
+        Quickshell.execDetached(["sh", "-lc", command]);
         Logger.i("CustomButton", `Executing command: ${command}`);
       }
     }

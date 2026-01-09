@@ -8,7 +8,6 @@ import qs.Modules.Bar.Widgets
 Singleton {
   id: root
 
-  // Signal emitted when plugin widgets are registered/unregistered
   signal pluginWidgetRegistryUpdated
 
   // Widget registry object mapping widget names to components
@@ -25,13 +24,14 @@ Singleton {
                            "KeepAwake": keepAwakeComponent,
                            "KeyboardLayout": keyboardLayoutComponent,
                            "LockKeys": lockKeysComponent,
+                           "Launcher": launcherComponent,
                            "MediaMini": mediaMiniComponent,
                            "Microphone": microphoneComponent,
+                           "Network": networkComponent,
                            "NightLight": nightLightComponent,
                            "NoctaliaPerformance": noctaliaPerformanceComponent,
                            "NotificationHistory": notificationHistoryComponent,
                            "PowerProfile": powerProfileComponent,
-                           "ScreenRecorder": screenRecorderComponent,
                            "SessionMenu": sessionMenuComponent,
                            "Spacer": spacerComponent,
                            "SystemMonitor": systemMonitorComponent,
@@ -39,7 +39,6 @@ Singleton {
                            "Tray": trayComponent,
                            "Volume": volumeComponent,
                            "VPN": vpnComponent,
-                           "WiFi": wiFiComponent,
                            "WallpaperSelector": wallpaperSelectorComponent,
                            "Workspace": workspaceComponent
                          })
@@ -54,6 +53,7 @@ Singleton {
                                      "ControlCenter": "WidgetSettings/ControlCenterSettings.qml",
                                      "CustomButton": "WidgetSettings/CustomButtonSettings.qml",
                                      "KeyboardLayout": "WidgetSettings/KeyboardLayoutSettings.qml",
+                                     "Launcher": "WidgetSettings/LauncherSettings.qml",
                                      "LockKeys": "WidgetSettings/LockKeysSettings.qml",
                                      "MediaMini": "WidgetSettings/MediaMiniSettings.qml",
                                      "Microphone": "WidgetSettings/MicrophoneSettings.qml",
@@ -65,7 +65,9 @@ Singleton {
                                      "Tray": "WidgetSettings/TraySettings.qml",
                                      "Volume": "WidgetSettings/VolumeSettings.qml",
                                      "VPN": "WidgetSettings/VPNSettings.qml",
+                                     // Reuse the same settings UI for renamed widget
                                      "WiFi": "WidgetSettings/WiFiSettings.qml",
+                                     "Network": "WidgetSettings/WiFiSettings.qml",
                                      "Workspace": "WidgetSettings/WorkspaceSettings.qml"
                                    })
 
@@ -98,7 +100,7 @@ Singleton {
                                     "displayMode": "onhover"
                                   },
                                   "Clock": {
-                                    "usePrimaryColor": true,
+                                    "usePrimaryColor": false,
                                     "useCustomFont": false,
                                     "customFont": "",
                                     "formatHorizontal": "HH:mm ddd, MMM dd",
@@ -138,7 +140,9 @@ Singleton {
                                     "maxTextLength": {
                                       "horizontal": 10,
                                       "vertical": 10
-                                    }
+                                    },
+                                    "enableColorization": false,
+                                    "colorizeSystemIcon": "none"
                                   },
                                   "KeyboardLayout": {
                                     "displayMode": "onhover",
@@ -152,20 +156,30 @@ Singleton {
                                     "numLockIcon": "letter-n",
                                     "scrollLockIcon": "letter-s"
                                   },
+                                  "Launcher": {
+                                    "icon": "rocket",
+                                    "usePrimaryColor": false
+                                  },
                                   "MediaMini": {
                                     "hideMode": "hidden",
                                     "scrollingMode": "hover",
                                     "maxWidth": 145,
                                     "useFixedWidth": false,
                                     "hideWhenIdle": false,
-                                    "showAlbumArt": false,
+                                    "showAlbumArt": true,
                                     "showArtistFirst": true,
                                     "showVisualizer": false,
                                     "showProgressRing": true,
-                                    "visualizerType": "linear"
+                                    "visualizerType": "linear",
+                                    "compactMode": false,
+                                    "panelShowAlbumArt": true,
+                                    "panelShowVisualizer": true,
+                                    "compactShowAlbumArt": true,
+                                    "compactShowVisualizer": false
                                   },
                                   "Microphone": {
-                                    "displayMode": "onhover"
+                                    "displayMode": "onhover",
+                                    "middleClickCommand": "pwvucontrol || pavucontrol"
                                   },
                                   "NotificationHistory": {
                                     "showUnreadBadge": true,
@@ -216,6 +230,9 @@ Singleton {
                                   "WiFi": {
                                     "displayMode": "onhover"
                                   },
+                                  "Network": {
+                                    "displayMode": "onhover"
+                                  },
                                   "Workspace": {
                                     "labelMode": "index",
                                     "followFocusedScreen": false,
@@ -230,7 +247,8 @@ Singleton {
                                     "iconScale": 0.8
                                   },
                                   "Volume": {
-                                    "displayMode": "onhover"
+                                    "displayMode": "onhover",
+                                    "middleClickCommand": "pwvucontrol || pavucontrol"
                                   }
                                 })
 
@@ -268,6 +286,9 @@ Singleton {
   property Component lockKeysComponent: Component {
     LockKeys {}
   }
+  property Component launcherComponent: Component {
+    Launcher {}
+  }
   property Component mediaMiniComponent: Component {
     MediaMini {}
   }
@@ -289,9 +310,6 @@ Singleton {
   property Component sessionMenuComponent: Component {
     SessionMenu {}
   }
-  property Component screenRecorderComponent: Component {
-    ScreenRecorder {}
-  }
   property Component controlCenterComponent: Component {
     ControlCenter {}
   }
@@ -310,8 +328,8 @@ Singleton {
   property Component vpnComponent: Component {
     VPN {}
   }
-  property Component wiFiComponent: Component {
-    WiFi {}
+  property Component networkComponent: Component {
+    Network {}
   }
   property Component wallpaperSelectorComponent: Component {
     WallpaperSelector {}
@@ -344,7 +362,13 @@ Singleton {
 
   // Helper function to check if widget has user settings
   function widgetHasUserSettings(id) {
-    return widgetMetadata[id] !== undefined;
+    var meta = widgetMetadata[id];
+    if (meta === undefined)
+      return false;
+    // allowUserSettings=false lets a widget opt out of the settings dialog
+    if (meta.allowUserSettings === false)
+      return false;
+    return true;
   }
 
   // ------------------------------

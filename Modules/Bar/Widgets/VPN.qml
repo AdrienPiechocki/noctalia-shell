@@ -43,7 +43,7 @@ Item {
       for (let i = 0; i < active.length; ++i) {
         const conn = active[i];
         items.push({
-                     "label": I18n.tr("context-menu.disconnect-vpn", {
+                     "label": I18n.tr("actions.disconnect-vpn", {
                                         "name": conn.name
                                       }),
                      "action": "disconnect:" + conn.uuid,
@@ -54,7 +54,7 @@ Item {
       for (let i = 0; i < inactive.length; ++i) {
         const conn = inactive[i];
         items.push({
-                     "label": I18n.tr("context-menu.connect-vpn", {
+                     "label": I18n.tr("actions.connect-vpn", {
                                         "name": conn.name
                                       }),
                      "action": "connect:" + conn.uuid,
@@ -62,7 +62,7 @@ Item {
                    });
       }
       items.push({
-                   "label": I18n.tr("context-menu.widget-settings"),
+                   "label": I18n.tr("actions.widget-settings"),
                    "action": "widget-settings",
                    "icon": "settings"
                  });
@@ -97,7 +97,6 @@ Item {
     id: pill
 
     screen: root.screen
-    density: Settings.data.bar.density
     oppositeDirection: BarService.getPillDirection(root)
     icon: VPNService.hasActiveConnection ? "shield-lock" : "shield"
     text: {

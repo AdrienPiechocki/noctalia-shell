@@ -57,6 +57,14 @@ Loader {
         }
       }
 
+      // Refresh icons when DesktopEntries becomes available
+      Connections {
+        target: DesktopEntries.applications
+        function onValuesChanged() {
+          root.iconRevision++;
+        }
+      }
+
       // Shared properties between peek and dock windows
       readonly property string displayMode: Settings.data.dock.displayMode
       readonly property bool autoHide: displayMode === "auto_hide"
@@ -89,6 +97,9 @@ Loader {
 
       // Combined model of running apps and pinned apps
       property var dockApps: []
+
+      // Revision counter to force icon re-evaluation
+      property int iconRevision: 0
 
       // Function to close any open context menu
       function closeAllContextMenus() {
@@ -292,7 +303,7 @@ Loader {
           anchors.left: true
           anchors.right: true
           focusable: false
-          color: Color.transparent
+          color: "transparent"
 
           WlrLayershell.namespace: "noctalia-dock-peek-" + (screen?.name || "unknown")
           WlrLayershell.exclusionMode: ExclusionMode.Ignore
@@ -332,7 +343,7 @@ Loader {
           screen: modelData
 
           focusable: false
-          color: Color.transparent
+          color: "transparent"
 
           WlrLayershell.namespace: "noctalia-dock-" + (screen?.name || "unknown")
           WlrLayershell.exclusionMode: exclusive ? ExclusionMode.Auto : ExclusionMode.Ignore
@@ -347,7 +358,7 @@ Loader {
           margins.bottom: {
             switch (Settings.data.bar.position) {
             case "bottom":
-              return (Style.barHeight + Style.marginM) + (Settings.data.bar.floating ? Settings.data.bar.marginVertical * Style.marginXL + floatingMargin : floatingMargin);
+              return (Style.barHeight + Style.marginM) + (Settings.data.bar.floating ? Settings.data.bar.marginVertical + floatingMargin : floatingMargin);
             default:
               return floatingMargin;
             }
@@ -476,20 +487,18 @@ Loader {
                         }
                       }
 
-                      Image {
+                      IconImage {
                         id: appIcon
                         width: iconSize
                         height: iconSize
                         anchors.centerIn: parent
-                        source: dock.getAppIcon(modelData)
+                        source: {
+                          root.iconRevision; // Force re-evaluation when revision changes
+                          return dock.getAppIcon(modelData);
+                        }
                         visible: source.toString() !== ""
-                        sourceSize.width: iconSize * 2
-                        sourceSize.height: iconSize * 2
                         smooth: true
-                        mipmap: true
-                        antialiasing: true
-                        fillMode: Image.PreserveAspectFit
-                        cache: true
+                        asynchronous: true
 
                         // Dim pinned apps that aren't running
                         opacity: appButton.isRunning ? 1.0 : Settings.data.dock.deadOpacity
@@ -652,7 +661,13 @@ Loader {
                               modelData.toplevel.activate();
                             } else if (modelData?.appId) {
                               // Pinned app not running - launch it
-                              const app = DesktopEntries.byId(modelData.appId);
+                              // Use ThemeIcons to robustly find the desktop entry
+                              const app = ThemeIcons.findAppEntry(modelData.appId);
+
+                              if (!app) {
+                                Logger.w("Dock", `Could not find desktop entry for pinned app: ${modelData.appId}`);
+                                return;
+                              }
 
                               if (Settings.data.appLauncher.customLaunchPrefixEnabled && Settings.data.appLauncher.customLaunchPrefix) {
                                 // Use custom launch prefix

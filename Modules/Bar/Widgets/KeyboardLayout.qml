@@ -46,7 +46,7 @@ Item {
 
     model: [
       {
-        "label": I18n.tr("context-menu.widget-settings"),
+        "label": I18n.tr("actions.widget-settings"),
         "action": "widget-settings",
         "icon": "settings"
       },
@@ -67,9 +67,7 @@ Item {
   BarPill {
     id: pill
     anchors.verticalCenter: parent.verticalCenter
-
     screen: root.screen
-    density: Settings.data.bar.density
     oppositeDirection: BarService.getPillDirection(root)
     icon: root.showIcon ? "keyboard" : ""
     autoHide: false // Important to be false so we can hover as long as we want

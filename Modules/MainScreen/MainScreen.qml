@@ -18,6 +18,8 @@ import qs.Modules.Panels.Changelog
 import qs.Modules.Panels.Clock
 import qs.Modules.Panels.ControlCenter
 import qs.Modules.Panels.Launcher
+import qs.Modules.Panels.Media
+import qs.Modules.Panels.Network
 import qs.Modules.Panels.NotificationHistory
 import qs.Modules.Panels.Plugins
 import qs.Modules.Panels.SessionMenu
@@ -26,7 +28,6 @@ import qs.Modules.Panels.SetupWizard
 import qs.Modules.Panels.SystemStats
 import qs.Modules.Panels.Tray
 import qs.Modules.Panels.Wallpaper
-import qs.Modules.Panels.WiFi
 import qs.Services.Compositor
 import qs.Services.UI
 
@@ -45,13 +46,26 @@ PanelWindow {
   WlrLayershell.namespace: "noctalia-background-" + (screen?.name || "unknown")
   WlrLayershell.exclusionMode: ExclusionMode.Ignore // Don't reserve space - BarExclusionZone handles that
   WlrLayershell.keyboardFocus: {
-    if (!root.isPanelOpen) {
+    // No panel open anywhere: no keyboard focus needed
+    if (!root.isAnyPanelOpen) {
       return WlrKeyboardFocus.None;
     }
-    if (Settings.data.floatingPanel.enabled) {
-      return Settings.data.floatingPanel.giveFocus ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None;
+    // Panel open on THIS screen: use panel's preferred focus mode
+    if (root.isPanelOpen) {
+      // Hyprland's Exclusive captures ALL input globally (including pointer),
+      // preventing click-to-close from working on other monitors.
+      // Workaround: briefly use Exclusive when panel opens (for text input focus),
+      // then switch to OnDemand (for click-to-close on other screens).
+      if (CompositorService.isHyprland) {
+        return PanelService.isInitializingKeyboard ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.OnDemand;
+      }
+      if (Settings.data.floatingPanel.enabled) {
+        return Settings.data.floatingPanel.giveFocus ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None;
+      }
+      return PanelService.openedPanel.exclusiveKeyboard ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.OnDemand;
     }
-    return PanelService.openedPanel.exclusiveKeyboard ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.OnDemand;
+    // Panel open on ANOTHER screen: OnDemand allows receiving pointer events for click-to-close
+    return WlrKeyboardFocus.OnDemand;
   }
 
   anchors {
@@ -65,18 +79,27 @@ PanelWindow {
   property real dimmerOpacity: Settings.data.general.dimmerOpacity ?? 0.8
   property bool isPanelOpen: (PanelService.openedPanel !== null) && (PanelService.openedPanel.screen === screen)
   property bool isPanelClosing: (PanelService.openedPanel !== null) && PanelService.openedPanel.isClosing
+  property bool isAnyPanelOpen: PanelService.openedPanel !== null
 
   color: {
     if (dimmerOpacity > 0 && isPanelOpen && !isPanelClosing) {
       return Qt.alpha(Color.mShadow, dimmerOpacity);
     }
-    return Color.transparent;
+    return "transparent";
   }
 
   Behavior on color {
+    enabled: !PanelService.closedImmediately
     ColorAnimation {
       duration: isPanelClosing ? Style.animationFaster : Style.animationNormal
       easing.type: Easing.OutQuad
+    }
+  }
+
+  // Reset closedImmediately flag after color change is applied
+  onColorChanged: {
+    if (PanelService.closedImmediately) {
+      PanelService.closedImmediately = false;
     }
   }
 
@@ -124,12 +147,13 @@ PanelWindow {
     }
 
     // Background region for click-to-close - reactive sizing
+    // Uses isAnyPanelOpen so clicking on any screen's background closes the panel
     Region {
       id: backgroundMaskRegion
       x: 0
       y: 0
-      width: root.isPanelOpen && !isPanelClosing ? root.width : 0
-      height: root.isPanelOpen && !isPanelClosing ? root.height : 0
+      width: root.isAnyPanelOpen ? root.width : 0
+      height: root.isAnyPanelOpen ? root.height : 0
       intersection: Intersection.Subtract
     }
   }
@@ -153,10 +177,10 @@ PanelWindow {
     }
 
     // Background MouseArea for closing panels when clicking outside
-    // Active whenever a panel is open - the mask ensures it only receives clicks when panel is open
+    // Uses isAnyPanelOpen so clicking on any screen's background closes the panel
     MouseArea {
       anchors.fill: parent
-      enabled: root.isPanelOpen
+      enabled: root.isAnyPanelOpen
       acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
       onClicked: mouse => {
                    if (PanelService.openedPanel) {
@@ -172,6 +196,12 @@ PanelWindow {
     AudioPanel {
       id: audioPanel
       objectName: "audioPanel-" + (root.screen?.name || "unknown")
+      screen: root.screen
+    }
+
+    MediaPlayerPanel {
+      id: mediaPlayerPanel
+      objectName: "mediaPlayerPanel-" + (root.screen?.name || "unknown")
       screen: root.screen
     }
 
@@ -253,9 +283,9 @@ PanelWindow {
       screen: root.screen
     }
 
-    WiFiPanel {
-      id: wifiPanel
-      objectName: "wifiPanel-" + (root.screen?.name || "unknown")
+    NetworkPanel {
+      id: networkPanel
+      objectName: "networkPanel-" + (root.screen?.name || "unknown")
       screen: root.screen
     }
 
@@ -297,8 +327,8 @@ PanelWindow {
       readonly property string barPosition: Settings.data.bar.position || "top"
       readonly property bool barIsVertical: barPosition === "left" || barPosition === "right"
       readonly property bool barFloating: Settings.data.bar.floating || false
-      readonly property real barMarginH: barFloating ? Math.floor(Settings.data.bar.marginHorizontal * Style.marginXL) : 0
-      readonly property real barMarginV: barFloating ? Math.floor(Settings.data.bar.marginVertical * Style.marginXL) : 0
+      readonly property real barMarginH: barFloating ? Math.floor(Settings.data.bar.marginHorizontal) : 0
+      readonly property real barMarginV: barFloating ? Math.floor(Settings.data.bar.marginVertical) : 0
 
       // Expose bar dimensions directly on this Item for BarBackground
       // Use screen dimensions directly

@@ -83,7 +83,7 @@ NBox {
     layer.effect: MultiEffect {
       maskEnabled: true
       maskThresholdMin: 0.95
-      maskSpreadAtMin: 0.0
+      maskSpreadAtMin: 0.15
       maskSource: ShaderEffectSource {
         sourceItem: Rectangle {
           width: root.width
@@ -129,8 +129,8 @@ NBox {
     // Border
     Rectangle {
       anchors.fill: parent
-      color: Color.transparent
-      border.color: Color.mOutline
+      color: "transparent"
+      border.color: Style.boxBorderColor
       border.width: Style.borderS
       radius: Style.radiusM
     }
@@ -197,7 +197,7 @@ NBox {
     height: Style.barHeight
     visible: MediaService.getAvailablePlayers().length > 1
     radius: Style.radiusM
-    color: Color.transparent
+    color: "transparent"
 
     property var currentPlayer: MediaService.getAvailablePlayers()[MediaService.selectedPlayerIndex]
 

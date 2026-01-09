@@ -39,10 +39,9 @@ Item {
 
     screen: root.screen
     text: IdleInhibitorService.timeout == null ? "" : Time.formatVagueHumanReadableDuration(IdleInhibitorService.timeout)
-    density: Settings.data.bar.density
     oppositeDirection: BarService.getPillDirection(root)
     icon: IdleInhibitorService.isInhibited ? "keep-awake-on" : "keep-awake-off"
-    tooltipText: IdleInhibitorService.isInhibited ? I18n.tr("tooltips.disable-keep-awake") : I18n.tr("tooltips.enable-keep-awake")
+    tooltipText: IdleInhibitorService.isInhibited ? I18n.tr("tooltips.keep-awake") : I18n.tr("tooltips.keep-awake")
     onClicked: IdleInhibitorService.manualToggle()
     forceOpen: IdleInhibitorService.timeout !== null
     forceClose: IdleInhibitorService.timeout == null

@@ -28,7 +28,7 @@ PopupWindow {
 
   implicitWidth: menuContentWidth + (Style.marginM * 2)
   implicitHeight: contextMenuColumn.implicitHeight + (Style.marginM * 2)
-  color: Color.transparent
+  color: "transparent"
   visible: false
 
   // Hidden text element for measuring text width
@@ -82,7 +82,7 @@ PopupWindow {
       // Focus item
       next.push({
                   "icon": "eye",
-                  "text": I18n.tr("dock.menu.focus"),
+                  "text": I18n.tr("common.focus"),
                   "action": function () {
                     handleFocus();
                   }
@@ -92,7 +92,7 @@ PopupWindow {
     // Pin/Unpin item
     next.push({
                 "icon": !isPinned ? "pin" : "unpin",
-                "text": !isPinned ? I18n.tr("dock.menu.pin") : I18n.tr("dock.menu.unpin"),
+                "text": !isPinned ? I18n.tr("common.pin") : I18n.tr("common.unpin"),
                 "action": function () {
                   handlePin();
                 }
@@ -102,7 +102,7 @@ PopupWindow {
       // Close item
       next.push({
                   "icon": "close",
-                  "text": I18n.tr("dock.menu.close"),
+                  "text": I18n.tr("common.close"),
                   "action": function () {
                     handleClose();
                   }
@@ -360,7 +360,7 @@ PopupWindow {
         Rectangle {
           Layout.fillWidth: true
           height: 32
-          color: root.hoveredItem === index ? Color.mHover : Color.transparent
+          color: root.hoveredItem === index ? Color.mHover : "transparent"
           radius: Style.radiusXS
 
           Row {

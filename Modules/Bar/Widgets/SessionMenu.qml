@@ -47,7 +47,6 @@ NIconButton {
     }
   }
 
-  density: Settings.data.bar.density
   baseSize: Style.capsuleHeight
   applyUiScale: false
   customRadius: Style.radiusL
@@ -56,8 +55,8 @@ NIconButton {
   tooltipDirection: BarService.getTooltipDirection()
   colorBg: Style.capsuleColor
   colorFg: root.iconColor
-  colorBorder: Color.transparent
-  colorBorderHover: Color.transparent
+  colorBorder: "transparent"
+  colorBorderHover: "transparent"
   border.color: Style.capsuleBorderColor
   border.width: Style.capsuleBorderWidth
 
@@ -66,7 +65,7 @@ NIconButton {
 
     model: [
       {
-        "label": I18n.tr("context-menu.widget-settings"),
+        "label": I18n.tr("actions.widget-settings"),
         "action": "widget-settings",
         "icon": "settings"
       },

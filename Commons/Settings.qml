@@ -25,7 +25,7 @@ Singleton {
   - Default cache directory: ~/.cache/noctalia
   */
   readonly property alias data: adapter  // Used to access via Settings.data.xxx.yyy
-  readonly property int settingsVersion: 36
+  readonly property int settingsVersion: 39
   readonly property bool isDebug: Quickshell.env("NOCTALIA_DEBUG") === "1"
   readonly property string shellName: "noctalia"
   readonly property string configDir: Quickshell.env("NOCTALIA_CONFIG_DIR") || (Quickshell.env("XDG_CONFIG_HOME") || Quickshell.env("HOME") + "/.config") + "/" + shellName + "/"
@@ -64,7 +64,6 @@ Singleton {
 
     // Patch-in the local default, resolved to user's home
     adapter.general.avatarImage = defaultAvatar;
-    adapter.screenRecorder.directory = defaultVideosDirectory;
     adapter.wallpaper.directory = defaultWallpapersDirectory;
     adapter.ui.fontDefault = Qt.application.font.family;
     adapter.ui.fontFixed = "monospace";
@@ -201,8 +200,8 @@ Singleton {
 
       // Floating bar settings
       property bool floating: false
-      property real marginVertical: 0.25
-      property real marginHorizontal: 0.25
+      property int marginVertical: 4
+      property int marginHorizontal: 4
 
       // Bar outer corners (inverted/concave corners at bar edges when not floating)
       property bool outerCorners: true
@@ -215,13 +214,10 @@ Singleton {
       widgets: JsonObject {
         property list<var> left: [
           {
-            "icon": "rocket",
-            "id": "CustomButton",
-            "leftClickExec": "qs -c noctalia-shell ipc call launcher toggle"
+            "id": "Launcher"
           },
           {
-            "id": "Clock",
-            "usePrimaryColor": false
+            "id": "Clock"
           },
           {
             "id": "SystemMonitor"
@@ -239,9 +235,6 @@ Singleton {
           }
         ]
         property list<var> right: [
-          {
-            "id": "ScreenRecorder"
-          },
           {
             "id": "Tray"
           },
@@ -287,6 +280,7 @@ Singleton {
       property int shadowOffsetY: 3
       property string language: ""
       property bool allowPanelsOnScreenWithoutBar: true
+      property bool showChangelogOnStartup: true
     }
 
     // ui
@@ -302,8 +296,11 @@ Singleton {
       // Details view mode persistence for panels
       property string wifiDetailsViewMode: "grid"   // "grid" or "list"
       property string bluetoothDetailsViewMode: "grid" // "grid" or "list"
+      // Persist the last-opened view for the unified network panel: "wifi" | "ethernet"
+      property string networkPanelView: "wifi"
       // Bluetooth available devices list: hide items without a name
       property bool bluetoothHideUnnamedDevices: false
+      property bool boxBorderEnabled: false
     }
 
     // location
@@ -318,6 +315,8 @@ Singleton {
       property bool showCalendarWeather: true
       property bool analogClockInCalendar: false
       property int firstDayOfWeek: -1 // -1 = auto (use locale), 0 = Sunday, 1 = Monday, 6 = Saturday
+      property bool hideWeatherTimezone: false
+      property bool hideWeatherCityName: false
     }
 
     // calendar
@@ -332,28 +331,10 @@ Singleton {
           "enabled": true
         },
         {
-          "id": "timer-card",
-          "enabled": true
-        },
-        {
           "id": "weather-card",
           "enabled": true
         }
       ]
-    }
-
-    // screen recorder
-    property JsonObject screenRecorder: JsonObject {
-      property string directory: ""
-      property int frameRate: 60
-      property string audioCodec: "opus"
-      property string videoCodec: "h264"
-      property string quality: "very_high"
-      property string colorRange: "limited"
-      property bool showCursor: true
-      property bool copyToClipboard: false
-      property string audioSource: "default_output"
-      property string videoSource: "portal"
     }
 
     // wallpaper
@@ -394,10 +375,11 @@ Singleton {
     // applauncher
     property JsonObject appLauncher: JsonObject {
       property bool enableClipboardHistory: false
+      property bool autoPasteClipboard: false
       property bool enableClipPreview: true
-      // Position: center, top_left, top_right, bottom_left, bottom_right, bottom_center, top_center
-      property string position: "center"
-      property list<string> pinnedExecs: []
+      property bool clipboardWrapText: true
+      property string position: "center"  // Position: center, top_left, top_right, bottom_left, bottom_right, bottom_center, top_center
+      property list<string> pinnedApps: []
       property bool useApp2Unit: false
       property bool sortByMostUsed: true
       property string terminalCommand: "xterm -e"
@@ -408,24 +390,24 @@ Singleton {
       property bool showCategories: true
       // Icon mode: "tabler" or "native"
       property string iconMode: "tabler"
+      property bool showIconBackground: false
       property bool ignoreMouseInput: false
+      property string screenshotAnnotationTool: ""
     }
 
     // control center
     property JsonObject controlCenter: JsonObject {
       // Position: close_to_bar_button, center, top_left, top_right, bottom_left, bottom_right, bottom_center, top_center
       property string position: "close_to_bar_button"
+      property string diskPath: "/"
       property JsonObject shortcuts
       shortcuts: JsonObject {
         property list<var> left: [
           {
-            "id": "WiFi"
+            "id": "Network"
           },
           {
             "id": "Bluetooth"
-          },
-          {
-            "id": "ScreenRecorder"
           },
           {
             "id": "WallpaperSelector"
@@ -497,7 +479,6 @@ Singleton {
       property bool useCustomColors: false
       property string warningColor: ""
       property string criticalColor: ""
-      property string diskPath: "/"
       property string externalMonitor: "resources || missioncenter || jdsystemmonitor || corestats || system-monitoring-center || gnome-system-monitor || plasma-systemmonitor || mate-system-monitor || ukui-system-monitor || deepin-system-monitor || pantheon-system-monitor"
     }
 
@@ -510,8 +491,7 @@ Singleton {
       property real size: 1
       property bool onlySameOutput: true
       property list<string> monitors: [] // holds dock visibility per monitor
-      // Desktop entry IDs pinned to the dock (e.g., "org.kde.konsole", "firefox.desktop")
-      property list<string> pinnedApps: []
+      property list<string> pinnedApps: [] // Desktop entry IDs pinned to the dock (e.g., "org.kde.konsole", "firefox.desktop")
       property bool colorizeIcons: false
 
       property bool pinnedStatic: false
@@ -523,6 +503,11 @@ Singleton {
     // network
     property JsonObject network: JsonObject {
       property bool wifiEnabled: true
+      property bool bluetoothRssiPollingEnabled: false  // Opt-in Bluetooth RSSI polling (uses bluetoothctl)
+      property int bluetoothRssiPollIntervalMs: 10000 // Polling interval in milliseconds for RSSI queries
+      property string wifiDetailsViewMode: "grid"   // "grid" or "list"
+      property string bluetoothDetailsViewMode: "grid" // "grid" or "list"
+      property bool bluetoothHideUnnamedDevices: false
     }
 
     // session menu
@@ -609,7 +594,6 @@ Singleton {
       property string visualizerType: "linear"
       property list<string> mprisBlacklist: []
       property string preferredPlayer: ""
-      property string externalMixer: "pwvucontrol || pavucontrol"
     }
 
     // brightness
@@ -627,7 +611,6 @@ Singleton {
       property string manualSunrise: "06:30"
       property string manualSunset: "18:30"
       property string matugenSchemeType: "scheme-fruit-salad"
-      property bool generateTemplatesForPredefined: true
     }
 
     // templates toggles
@@ -656,6 +639,7 @@ Singleton {
       property bool mango: false
       property bool zed: false
       property bool helix: false
+      property bool zenBrowser: false
       property bool enableUserTemplates: false
     }
 
@@ -896,7 +880,7 @@ Singleton {
     // -----------------
     const sections = ["left", "center", "right"];
 
-    // 1. remove any non existing widget type
+    // 1. remove any non existing bar widget type
     var removedWidget = false;
     for (var s = 0; s < sections.length; s++) {
       const sectionName = sections[s];
@@ -905,7 +889,7 @@ Singleton {
       for (var i = widgets.length - 1; i >= 0; i--) {
         var widget = widgets[i];
         if (!BarWidgetRegistry.hasWidget(widget.id)) {
-          Logger.w(`Settings`, `!!! Deleted invalid widget ${widget.id} !!!`);
+          Logger.w(`Settings`, `!!! Deleted invalid bar widget ${widget.id} !!!`);
           widgets.splice(i, 1);
           removedWidget = true;
         }
@@ -913,7 +897,40 @@ Singleton {
     }
 
     // -----------------
-    // 2. upgrade user widget settings
+    // 2. remove any non existing control center widget type
+    const ccSections = ["left", "right"];
+    for (var s = 0; s < ccSections.length; s++) {
+      const sectionName = ccSections[s];
+      const shortcuts = adapter.controlCenter.shortcuts[sectionName];
+      for (var i = shortcuts.length - 1; i >= 0; i--) {
+        var shortcut = shortcuts[i];
+        if (!ControlCenterWidgetRegistry.hasWidget(shortcut.id)) {
+          Logger.w(`Settings`, `!!! Deleted invalid control center widget ${shortcut.id} !!!`);
+          shortcuts.splice(i, 1);
+          removedWidget = true;
+        }
+      }
+    }
+
+    // -----------------
+    // 3. remove any non existing desktop widget type
+    const monitorWidgets = adapter.desktopWidgets.monitorWidgets;
+    for (var m = 0; m < monitorWidgets.length; m++) {
+      const monitor = monitorWidgets[m];
+      if (!monitor.widgets)
+        continue;
+      for (var i = monitor.widgets.length - 1; i >= 0; i--) {
+        var desktopWidget = monitor.widgets[i];
+        if (!DesktopWidgetRegistry.hasWidget(desktopWidget.id)) {
+          Logger.w(`Settings`, `!!! Deleted invalid desktop widget ${desktopWidget.id} !!!`);
+          monitor.widgets.splice(i, 1);
+          removedWidget = true;
+        }
+      }
+    }
+
+    // -----------------
+    // 4. upgrade user widget settings
     for (var s = 0; s < sections.length; s++) {
       const sectionName = sections[s];
       for (var i = 0; i < adapter.bar.widgets[sectionName].length; i++) {

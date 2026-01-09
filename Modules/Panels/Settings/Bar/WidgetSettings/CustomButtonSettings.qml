@@ -20,6 +20,8 @@ ColumnLayout {
   property int valueMaxTextLengthVertical: widgetData?.maxTextLength?.vertical ?? widgetMetadata?.maxTextLength?.vertical
   property string valueHideMode: (widgetData.hideMode !== undefined) ? widgetData.hideMode : widgetMetadata.hideMode
   property bool valueShowIcon: (widgetData.showIcon !== undefined) ? widgetData.showIcon : widgetMetadata.showIcon
+  property bool valueEnableColorization: widgetData.enableColorization || false
+  property string valueColorizeSystemIcon: widgetData.colorizeSystemIcon !== undefined ? widgetData.colorizeSystemIcon : widgetMetadata.colorizeSystemIcon || "none"
 
   function saveSettings() {
     var settings = Object.assign({}, widgetData || {});
@@ -48,6 +50,8 @@ ColumnLayout {
       "vertical": valueMaxTextLengthVertical
     };
     settings.textIntervalMs = parseInt(textIntervalInput.text || textIntervalInput.placeholderText, 10);
+    settings.enableColorization = valueEnableColorization;
+    settings.colorizeSystemIcon = valueColorizeSystemIcon;
     return settings;
   }
 
@@ -67,8 +71,8 @@ ColumnLayout {
         spacing: Style.marginM
 
         NLabel {
-          label: I18n.tr("bar.widget-settings.custom-button.icon.label")
-          description: I18n.tr("bar.widget-settings.custom-button.icon.description")
+          label: I18n.tr("common.icon")
+          description: I18n.tr("bar.custom-button.icon-description")
         }
 
         NIcon {
@@ -79,7 +83,7 @@ ColumnLayout {
         }
 
         NButton {
-          text: I18n.tr("bar.widget-settings.custom-button.browse")
+          text: I18n.tr("common.browse")
           onClicked: iconPicker.open()
         }
       }
@@ -94,11 +98,48 @@ ColumnLayout {
 
       NToggle {
         id: showIconToggle
-        label: I18n.tr("bar.widget-settings.custom-button.show-icon.label", "Show icon")
-        description: I18n.tr("bar.widget-settings.custom-button.show-icon.description", "Toggles the visibility of the widget's icon.")
+        label: I18n.tr("bar.custom-button.show-icon-label", "Show icon")
+        description: I18n.tr("bar.custom-button.show-icon-description", "Toggles the visibility of the widget's icon.")
         checked: valueShowIcon
         onToggled: checked => valueShowIcon = checked
         visible: textCommandInput.text !== ""
+      }
+
+      NToggle {
+        label: I18n.tr("bar.custom-button.enable-colorization-label")
+        description: I18n.tr("bar.custom-button.enable-colorization-description")
+        checked: valueEnableColorization
+        onToggled: checked => valueEnableColorization = checked
+      }
+
+      NComboBox {
+        visible: valueEnableColorization
+        label: I18n.tr("bar.custom-button.color-selection-label")
+        description: I18n.tr("bar.custom-button.color-selection-description")
+        model: [
+          {
+            "name": I18n.tr("common.none"),
+            "key": "none"
+          },
+          {
+            "name": I18n.tr("colors.primary"),
+            "key": "primary"
+          },
+          {
+            "name": I18n.tr("colors.secondary"),
+            "key": "secondary"
+          },
+          {
+            "name": I18n.tr("colors.tertiary"),
+            "key": "tertiary"
+          },
+          {
+            "name": I18n.tr("colors.error"),
+            "key": "error"
+          }
+        ]
+        currentKey: valueColorizeSystemIcon
+        onSelected: key => valueColorizeSystemIcon = key
       }
 
       RowLayout {
@@ -107,8 +148,8 @@ ColumnLayout {
         NTextInput {
           id: leftClickExecInput
           Layout.fillWidth: true
-          label: I18n.tr("bar.widget-settings.custom-button.left-click.label")
-          description: I18n.tr("bar.widget-settings.custom-button.left-click.description")
+          label: I18n.tr("bar.custom-button.left-click-label")
+          description: I18n.tr("bar.custom-button.left-click-description")
           placeholderText: I18n.tr("placeholders.enter-command")
           text: widgetData?.leftClickExec || widgetMetadata.leftClickExec
         }
@@ -118,7 +159,7 @@ ColumnLayout {
           enabled: !valueTextStream
           Layout.alignment: Qt.AlignRight | Qt.AlignBottom
           Layout.bottomMargin: Style.marginS
-          onEntered: TooltipService.show(leftClickUpdateText, I18n.tr("bar.widget-settings.custom-button.left-click.update-text"), "auto")
+          onEntered: TooltipService.show(leftClickUpdateText, I18n.tr("bar.custom-button.left-click-update-text"), "auto")
           onExited: TooltipService.hide()
           checked: widgetData?.leftClickUpdateText ?? widgetMetadata.leftClickUpdateText
           onToggled: isChecked => checked = isChecked
@@ -131,8 +172,8 @@ ColumnLayout {
         NTextInput {
           id: rightClickExecInput
           Layout.fillWidth: true
-          label: I18n.tr("bar.widget-settings.custom-button.right-click.label")
-          description: I18n.tr("bar.widget-settings.custom-button.right-click.description")
+          label: I18n.tr("bar.custom-button.right-click-label")
+          description: I18n.tr("bar.custom-button.right-click-description")
           placeholderText: I18n.tr("placeholders.enter-command")
           text: widgetData?.rightClickExec || widgetMetadata.rightClickExec
         }
@@ -142,7 +183,7 @@ ColumnLayout {
           enabled: !valueTextStream
           Layout.alignment: Qt.AlignRight | Qt.AlignBottom
           Layout.bottomMargin: Style.marginS
-          onEntered: TooltipService.show(rightClickUpdateText, I18n.tr("bar.widget-settings.custom-button.right-click.update-text"), "auto")
+          onEntered: TooltipService.show(rightClickUpdateText, I18n.tr("bar.custom-button.right-click-update-text"), "auto")
           onExited: TooltipService.hide()
           checked: widgetData?.rightClickUpdateText ?? widgetMetadata.rightClickUpdateText
           onToggled: isChecked => checked = isChecked
@@ -155,8 +196,8 @@ ColumnLayout {
         NTextInput {
           id: middleClickExecInput
           Layout.fillWidth: true
-          label: I18n.tr("bar.widget-settings.custom-button.middle-click.label")
-          description: I18n.tr("bar.widget-settings.custom-button.middle-click.description")
+          label: I18n.tr("bar.custom-button.middle-click-label")
+          description: I18n.tr("bar.custom-button.middle-click-description")
           placeholderText: I18n.tr("placeholders.enter-command")
           text: widgetData.middleClickExec || widgetMetadata.middleClickExec
         }
@@ -166,7 +207,7 @@ ColumnLayout {
           enabled: !valueTextStream
           Layout.alignment: Qt.AlignRight | Qt.AlignBottom
           Layout.bottomMargin: Style.marginS
-          onEntered: TooltipService.show(middleClickUpdateText, I18n.tr("bar.widget-settings.custom-button.middle-click.update-text"), "auto")
+          onEntered: TooltipService.show(middleClickUpdateText, I18n.tr("bar.custom-button.middle-click-update-text"), "auto")
           onExited: TooltipService.hide()
           checked: widgetData?.middleClickUpdateText ?? widgetMetadata.middleClickUpdateText
           onToggled: isChecked => checked = isChecked
@@ -177,8 +218,8 @@ ColumnLayout {
       NToggle {
         id: separateWheelToggle
         Layout.fillWidth: true
-        label: I18n.tr("bar.widget-settings.custom-button.wheel-mode-separate.label", "Separate wheel commands")
-        description: I18n.tr("bar.widget-settings.custom-button.wheel-mode-separate.description", "Enable separate commands for wheel up and down")
+        label: I18n.tr("bar.custom-button.wheel-mode-separate-label", "Separate wheel commands")
+        description: I18n.tr("bar.custom-button.wheel-mode-separate-description", "Enable separate commands for wheel up and down")
         property bool internalChecked: (widgetData?.wheelMode || widgetMetadata?.wheelMode) === "separate"
         checked: internalChecked
         onToggled: checked => {
@@ -198,8 +239,8 @@ ColumnLayout {
           NTextInput {
             id: wheelExecInput
             Layout.fillWidth: true
-            label: I18n.tr("bar.widget-settings.custom-button.wheel.label")
-            description: I18n.tr("bar.widget-settings.custom-button.wheel.description")
+            label: I18n.tr("bar.custom-button.wheel-label")
+            description: I18n.tr("bar.custom-button.wheel-description")
             placeholderText: I18n.tr("placeholders.enter-command")
             text: widgetData?.wheelExec || widgetMetadata?.wheelExec
           }
@@ -209,7 +250,7 @@ ColumnLayout {
             enabled: !valueTextStream
             Layout.alignment: Qt.AlignRight | Qt.AlignBottom
             Layout.bottomMargin: Style.marginS
-            onEntered: TooltipService.show(wheelUpdateText, I18n.tr("bar.widget-settings.custom-button.wheel.update-text"), "auto")
+            onEntered: TooltipService.show(wheelUpdateText, I18n.tr("bar.custom-button.wheel-update-text"), "auto")
             onExited: TooltipService.hide()
             checked: widgetData?.wheelUpdateText ?? widgetMetadata?.wheelUpdateText
             onToggled: isChecked => checked = isChecked
@@ -227,8 +268,8 @@ ColumnLayout {
             NTextInput {
               id: wheelUpExecInput
               Layout.fillWidth: true
-              label: I18n.tr("bar.widget-settings.custom-button.wheel-up.label")
-              description: I18n.tr("bar.widget-settings.custom-button.wheel-up.description")
+              label: I18n.tr("bar.custom-button.wheel-up-label")
+              description: I18n.tr("bar.custom-button.wheel-up-description")
               placeholderText: I18n.tr("placeholders.enter-command")
               text: widgetData?.wheelUpExec || widgetMetadata?.wheelUpExec
             }
@@ -238,7 +279,7 @@ ColumnLayout {
               enabled: !valueTextStream
               Layout.alignment: Qt.AlignRight | Qt.AlignBottom
               Layout.bottomMargin: Style.marginS
-              onEntered: TooltipService.show(wheelUpUpdateText, I18n.tr("bar.widget-settings.custom-button.wheel.update-text"), "auto")
+              onEntered: TooltipService.show(wheelUpUpdateText, I18n.tr("bar.custom-button.wheel-update-text"), "auto")
               onExited: TooltipService.hide()
               checked: (widgetData?.wheelUpUpdateText !== undefined) ? widgetData.wheelUpUpdateText : widgetMetadata?.wheelUpUpdateText
               onToggled: isChecked => checked = isChecked
@@ -251,8 +292,8 @@ ColumnLayout {
             NTextInput {
               id: wheelDownExecInput
               Layout.fillWidth: true
-              label: I18n.tr("bar.widget-settings.custom-button.wheel-down.label")
-              description: I18n.tr("bar.widget-settings.custom-button.wheel-down.description")
+              label: I18n.tr("bar.custom-button.wheel-down-label")
+              description: I18n.tr("bar.custom-button.wheel-down-description")
               placeholderText: I18n.tr("placeholders.enter-command")
               text: widgetData?.wheelDownExec || widgetMetadata?.wheelDownExec
             }
@@ -262,7 +303,7 @@ ColumnLayout {
               enabled: !valueTextStream
               Layout.alignment: Qt.AlignRight | Qt.AlignBottom
               Layout.bottomMargin: Style.marginS
-              onEntered: TooltipService.show(wheelDownUpdateText, I18n.tr("bar.widget-settings.custom-button.wheel.update-text"), "auto")
+              onEntered: TooltipService.show(wheelDownUpdateText, I18n.tr("bar.custom-button.wheel-update-text"), "auto")
               onExited: TooltipService.hide()
               checked: (widgetData?.wheelDownUpdateText !== undefined) ? widgetData.wheelDownUpdateText : widgetMetadata?.wheelDownUpdateText
               onToggled: isChecked => checked = isChecked
@@ -276,12 +317,12 @@ ColumnLayout {
       }
 
       NHeader {
-        label: I18n.tr("bar.widget-settings.custom-button.dynamic-text")
+        label: I18n.tr("bar.custom-button.dynamic-text")
       }
 
       NSpinBox {
-        label: I18n.tr("bar.widget-settings.custom-button.max-text-length-horizontal.label", "Max text length (horizontal)")
-        description: I18n.tr("bar.widget-settings.custom-button.max-text-length-horizontal.description", "Maximum number of characters to show in horizontal bar (0 to hide text)")
+        label: I18n.tr("bar.custom-button.max-text-length-horizontal-label", "Max text length (horizontal)")
+        description: I18n.tr("bar.custom-button.max-text-length-horizontal-description", "Maximum number of characters to show in horizontal bar (0 to hide text)")
         from: 0
         to: 100
         value: valueMaxTextLengthHorizontal
@@ -289,8 +330,8 @@ ColumnLayout {
       }
 
       NSpinBox {
-        label: I18n.tr("bar.widget-settings.custom-button.max-text-length-vertical.label", "Max text length (vertical)")
-        description: I18n.tr("bar.widget-settings.custom-button.max-text-length-vertical.description", "Maximum number of characters to show in vertical bar (0 to hide text)")
+        label: I18n.tr("bar.custom-button.max-text-length-vertical-label", "Max text length (vertical)")
+        description: I18n.tr("bar.custom-button.max-text-length-vertical-description", "Maximum number of characters to show in vertical bar (0 to hide text)")
         from: 0
         to: 100
         value: valueMaxTextLengthVertical
@@ -299,16 +340,16 @@ ColumnLayout {
 
       NToggle {
         id: textStreamInput
-        label: I18n.tr("bar.widget-settings.custom-button.text-stream.label")
-        description: I18n.tr("bar.widget-settings.custom-button.text-stream.description")
+        label: I18n.tr("bar.custom-button.text-stream-label")
+        description: I18n.tr("bar.custom-button.text-stream-description")
         checked: valueTextStream
         onToggled: checked => valueTextStream = checked
       }
 
       NToggle {
         id: parseJsonInput
-        label: I18n.tr("bar.widget-settings.custom-button.parse-json.label", "Parse output as JSON")
-        description: I18n.tr("bar.widget-settings.custom-button.parse-json.description", "Parse the command output as a JSON object to dynamically set text and icon.")
+        label: I18n.tr("bar.custom-button.parse-json-label", "Parse output as JSON")
+        description: I18n.tr("bar.custom-button.parse-json-description", "Parse the command output as a JSON object to dynamically set text and icon.")
         checked: valueParseJson
         onToggled: checked => valueParseJson = checked
       }
@@ -316,8 +357,8 @@ ColumnLayout {
       NTextInput {
         id: textCommandInput
         Layout.fillWidth: true
-        label: I18n.tr("bar.widget-settings.custom-button.display-command-output.label")
-        description: valueTextStream ? I18n.tr("bar.widget-settings.custom-button.display-command-output.stream-description") : I18n.tr("bar.widget-settings.custom-button.display-command-output.description")
+        label: I18n.tr("bar.custom-button.display-command-output-label")
+        description: valueTextStream ? I18n.tr("bar.custom-button.display-command-output-stream-description") : I18n.tr("bar.custom-button.display-command-output-description")
         placeholderText: I18n.tr("placeholders.command-example")
         text: widgetData?.textCommand || widgetMetadata.textCommand
       }
@@ -326,8 +367,8 @@ ColumnLayout {
         id: textCollapseInput
         Layout.fillWidth: true
         visible: valueTextStream
-        label: I18n.tr("bar.widget-settings.custom-button.collapse-condition.label")
-        description: I18n.tr("bar.widget-settings.custom-button.collapse-condition.description")
+        label: I18n.tr("bar.custom-button.collapse-condition-label")
+        description: I18n.tr("bar.custom-button.collapse-condition-description")
         placeholderText: I18n.tr("placeholders.enter-text-to-collapse")
         text: widgetData?.textCollapse || widgetMetadata.textCollapse
       }
@@ -336,27 +377,27 @@ ColumnLayout {
         id: textIntervalInput
         Layout.fillWidth: true
         visible: !valueTextStream
-        label: I18n.tr("bar.widget-settings.custom-button.refresh-interval.label")
-        description: I18n.tr("bar.widget-settings.custom-button.refresh-interval.description")
+        label: I18n.tr("bar.custom-button.refresh-interval-label")
+        description: I18n.tr("bar.custom-button.refresh-interval-description")
         placeholderText: String(widgetMetadata.textIntervalMs)
         text: widgetData && widgetData.textIntervalMs !== undefined ? String(widgetData.textIntervalMs) : ""
       }
 
       NComboBox {
         id: hideModeComboBox
-        label: I18n.tr("bar.widget-settings.custom-button.hide-mode.label", "Hide mode")
-        description: I18n.tr("bar.widget-settings.custom-button.hide-mode.description", "Controls widget visibility when the command has no output.")
+        label: I18n.tr("bar.custom-button.hide-mode-label", "Hide mode")
+        description: I18n.tr("bar.custom-button.hide-mode-description", "Controls widget visibility when the command has no output.")
         model: [
           {
-            name: I18n.tr("bar.widget-settings.custom-button.hide-mode.alwaysExpanded", "Always expanded"),
+            name: I18n.tr("bar.custom-button.hide-mode-always-expanded", "Always expanded"),
             key: "alwaysExpanded"
           },
           {
-            name: I18n.tr("bar.widget-settings.custom-button.hide-mode.expandWithOutput", "Expand when has output"),
+            name: I18n.tr("bar.custom-button.hide-mode-expand-with-output", "Expand when has output"),
             key: "expandWithOutput"
           },
           {
-            name: I18n.tr("bar.widget-settings.custom-button.hide-mode.maxTransparent", "Max expanded but transparent"),
+            name: I18n.tr("bar.custom-button.hide-mode-max-transparent", "Max expanded but transparent"),
             key: "maxTransparent"
           }
         ]

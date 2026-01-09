@@ -397,7 +397,7 @@ Singleton {
       "cachedImage": image  // Start with original, update when cached
                      ,
       "actionsJson": JSON.stringify((n.actions || []).map(a => ({
-                                                                  "text": a.text || "Action",
+                                                                  "text": (a.text || "").trim() || "Action",
                                                                   "identifier": a.identifier || ""
                                                                 })))
     };
@@ -804,6 +804,24 @@ Singleton {
 
     historyList.clear();
     saveHistory();
+  }
+
+  function getHistorySnapshot() {
+    const items = [];
+    for (var i = 0; i < historyList.count; i++) {
+      const entry = historyList.get(i);
+      items.push({
+                   "id": entry.id,
+                   "summary": entry.summary,
+                   "body": entry.body,
+                   "appName": entry.appName,
+                   "urgency": entry.urgency,
+                   "timestamp": entry.timestamp instanceof Date ? entry.timestamp.getTime() : entry.timestamp,
+                   "originalImage": entry.originalImage,
+                   "cachedImage": entry.cachedImage
+                 });
+    }
+    return items;
   }
 
   // Signals
